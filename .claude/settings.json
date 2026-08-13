@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter --version)",
+      "Bash(curl -s \"https://pub.dev/api/packages/convex_flutter\" --max-time 25)",
+      "Bash(python -c ' *)",
+      "Bash(flutter analyze *)",
+      "Bash(python -)",
+      "Bash(flutter test *)",
+      "Bash(dart format *)",
+      "Bash(echo \"exit=$?\")"
+    ]
+  }
+}

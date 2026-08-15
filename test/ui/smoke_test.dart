@@ -49,7 +49,7 @@ void main() {
       await tester.pump();
 
       expect(find.byType(HomeView), findsOneWidget);
-      expect(find.text('Start New Game'), findsOneWidget);
+      expect(find.text('Quick match'), findsOneWidget);
     });
 
     // The app ships with no social data behind it, so the friends tab opens on
@@ -96,7 +96,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RootView), findsOneWidget);
-    expect(find.text('Start New Game'), findsOneWidget);
+    expect(find.text('Quick match'), findsOneWidget);
   });
 
   group('match screen', () {

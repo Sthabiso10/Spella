@@ -167,7 +167,7 @@ void main() {
 
     // Home is the default tab, so its primary action has to be on screen and
     // clear of the bar rather than hidden behind it.
-    final Finder play = find.text('Start New Game');
+    final Finder play = find.text('Quick match');
     expect(play, findsOneWidget);
     expect(
       tester.getRect(play).bottom,

@@ -10,8 +10,8 @@ import 'package:spella/core/services/social_service.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
-/// The home dashboard: who you are, who is waiting on you, and the fastest
-/// route into a game.
+/// The home dashboard: who you are, how far along you are, who is waiting on
+/// you, and the fastest route into a game.
 class HomeViewModel extends ReactiveViewModel {
   final PlayerService _playerService = locator<PlayerService>();
   final SocialService _socialService = locator<SocialService>();
@@ -26,21 +26,28 @@ class HomeViewModel extends ReactiveViewModel {
 
   Player get player => _playerService.currentPlayer;
 
-  /// Modes offered on the quick play row.
+  /// The modes on the grid.
   ///
   /// [GameMode.party] sits alongside the solo modes because that is where a
   /// player looks for "a different way to play", even though it is the one
   /// entry that opens a setup screen instead of dealing a rack.
-  List<GameMode> get quickPlayModes => const <GameMode>[
+  List<GameMode> get gameModes => const <GameMode>[
     GameMode.classic,
     GameMode.blitz,
     GameMode.marathon,
     GameMode.party,
   ];
 
+  /// What the one-tap play button starts.
+  ///
+  /// Named separately from the grid so the hero can say out loud which mode it
+  /// is about to deal - a button that starts *a* game without saying which one
+  /// is a button people hesitate over.
+  GameMode get quickMatchMode => GameMode.classic;
+
   List<FriendActivity> get activityFeed => _socialService.activityFeed;
 
-  /// Opponents shown as "waiting on you" in the hero card.
+  /// Opponents shown as waiting on the player.
   List<Player> get waitingFriends =>
       _socialService.onlineFriends.take(3).toList(growable: false);
 
@@ -56,6 +63,20 @@ class HomeViewModel extends ReactiveViewModel {
       .take(3)
       .toList(growable: false);
 
+  /// Whether the player has finished a match yet.
+  ///
+  /// Gates the record strip: four zeroes tell a new player nothing about
+  /// themselves and quite a lot about how empty the app is.
+  bool get hasPlayed => player.gamesPlayed > 0;
+
+  /// Whether to offer the nudge towards adding people.
+  ///
+  /// Home used to carry a permanent "nothing yet" feed and a leaderboard that
+  /// never appeared. Both are now silent when they have nothing to say, and
+  /// this single prompt - which has an action attached - stands in for them.
+  bool get showFriendsPrompt =>
+      _socialService.friends.isEmpty && activityFeed.isEmpty && topSpellers.isEmpty;
+
   String get greeting {
     final int hour = DateTime.now().hour;
     if (hour < 12) return 'Morning';
@@ -63,19 +84,32 @@ class HomeViewModel extends ReactiveViewModel {
     return 'Evening';
   }
 
-  /// Headline for the hero card, driven by how much is waiting on the player.
-  String get heroTitle =>
-      waitingFriends.isEmpty ? 'Ready to\nspell?' : 'Your move,\n${player.username}';
+  /// Headline for the hero, in priority order: something is waiting on you, you
+  /// have a run going, you have never played, or you are simply back.
+  ///
+  /// One line, never a hard-wrapped two. A baked-in newline breaks the moment
+  /// the text scale or the screen width moves.
+  String get heroTitle {
+    if (waitingFriends.isNotEmpty) return 'Your move';
+    if (player.streak >= 2) return '${player.streak} in a row';
+    if (!hasPlayed) return 'Ready to spell?';
+    return 'Back for another?';
+  }
 
   String get heroSubtitle {
     final int waiting = waitingFriends.length;
-    // With nobody added yet, the honest pitch is the game itself rather than a
-    // social loop the player has no one to take part in.
-    if (waiting == 0) {
-      return 'Play a round against the bot, or pass a phone round the table.';
+    if (waiting > 0) {
+      return '$waiting friend${waiting == 1 ? ' is' : 's are'} waiting on your turn. '
+          "Don't leave them hanging.";
     }
-    return "You have $waiting friend${waiting == 1 ? '' : 's'} waiting for their "
-        "turn. Don't leave them hanging!";
+    if (player.streak >= 2) return 'Take one more and the run keeps going.';
+    // With nothing played yet, the honest pitch is the game itself rather than
+    // a social loop the player has no one to take part in.
+    if (!hasPlayed) {
+      return 'Build the best word you can from the tiles you are dealt. '
+          'Highest total after five rounds wins.';
+    }
+    return 'Jump straight back in, or pick a different mode below.';
   }
 
   /// Starts a match in [mode].

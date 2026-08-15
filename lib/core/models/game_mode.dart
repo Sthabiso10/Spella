@@ -6,7 +6,7 @@ enum GameMode {
   classic(
     id: 'classic',
     label: 'Classic',
-    tagline: 'Best of 5 - 7 tiles',
+    tagline: 'Best of 5 · 7 tiles',
     rackSize: 7,
     totalRounds: 5,
     secondsPerRound: 45,
@@ -15,7 +15,7 @@ enum GameMode {
   blitz(
     id: 'blitz',
     label: 'Blitz',
-    tagline: 'Fast 3 rounds - 6 tiles',
+    tagline: 'Fast 3 rounds · 6 tiles',
     rackSize: 6,
     totalRounds: 3,
     secondsPerRound: 25,
@@ -24,7 +24,7 @@ enum GameMode {
   marathon(
     id: 'marathon',
     label: 'Marathon',
-    tagline: '7 rounds - 9 tiles',
+    tagline: '7 rounds · 9 tiles',
     rackSize: 9,
     totalRounds: 7,
     secondsPerRound: 60,
@@ -33,7 +33,7 @@ enum GameMode {
   daily(
     id: 'daily',
     label: 'Daily Challenge',
-    tagline: 'One rack - one shot',
+    tagline: 'One rack · one shot',
     rackSize: 8,
     totalRounds: 1,
     secondsPerRound: 90,
@@ -47,7 +47,7 @@ enum GameMode {
   party(
     id: 'party',
     label: 'Pass & Play',
-    tagline: 'One device - 2 to 6 players',
+    tagline: 'One device · 2 to 6 players',
     rackSize: 7,
     totalRounds: 3,
     secondsPerRound: 45,

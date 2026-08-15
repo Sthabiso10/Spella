@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spella/core/models/game_mode.dart';
 import 'package:spella/core/models/player.dart';
 import 'package:spella/ui/common/app_palette.dart';
 import 'package:spella/ui/common/app_typography.dart';
@@ -6,19 +7,24 @@ import 'package:spella/ui/common/ui_helpers.dart';
 import 'package:spella/ui/widgets/app_avatar.dart';
 import 'package:spella/ui/widgets/app_buttons.dart';
 import 'package:spella/ui/widgets/pressable.dart';
-import 'package:spella/ui/widgets/section_header.dart';
 
-/// The top of Home: what is being asked of the player, the way into a game,
-/// and who is waiting on them.
+/// The top of the page body: what is being asked of the player, who is waiting
+/// on them, and the single fastest way into a game.
 ///
 /// Deliberately not a card. This is the page's opening statement, and boxing it
 /// would make it one object among several instead of the thing the screen is
 /// about. Hierarchy comes from type size and from the amount of air around the
-/// button - which is the only high-contrast element above the fold.
+/// button - the only high-contrast element above the fold.
+///
+/// Order matters here: the people waiting come *above* the play button. If
+/// somebody is mid-game with you, finishing that is more urgent than starting
+/// another, and the layout should not make you scroll past the generic action
+/// to find the specific one.
 class PlayHero extends StatelessWidget {
   const PlayHero({
     required this.title,
     required this.subtitle,
+    required this.quickMatchMode,
     required this.waitingFriends,
     required this.onPlay,
     required this.onFriendTap,
@@ -27,6 +33,11 @@ class PlayHero extends StatelessWidget {
 
   final String title;
   final String subtitle;
+
+  /// The mode [onPlay] deals, named under the button so the player knows what
+  /// they are agreeing to before they press it.
+  final GameMode quickMatchMode;
+
   final List<Player> waitingFriends;
   final VoidCallback onPlay;
   final ValueChanged<Player> onFriendTap;
@@ -44,17 +55,8 @@ class PlayHero extends StatelessWidget {
         ),
         verticalSpace(AppSpacing.sm),
         Text(subtitle, style: AppTextStyles.body.copyWith(color: palette.textSecondary)),
-        verticalSpace(AppSpacing.xl),
-        AppButton(
-          label: 'Start New Game',
-          icon: Icons.play_arrow_rounded,
-          size: AppButtonSize.large,
-          onPressed: onPlay,
-        ),
         if (waitingFriends.isNotEmpty) ...<Widget>[
-          verticalSpace(AppSpacing.xl),
-          const SectionHeader(title: 'Waiting on you', accentDot: true),
-          verticalSpace(AppSpacing.md),
+          verticalSpace(AppSpacing.lg),
           SizedBox(
             height: scaledSize(context, 44),
             child: ListView.separated(
@@ -72,6 +74,29 @@ class PlayHero extends StatelessWidget {
             ),
           ),
         ],
+        verticalSpace(AppSpacing.xl),
+        AppButton(
+          label: 'Quick match',
+          icon: Icons.play_arrow_rounded,
+          size: AppButtonSize.large,
+          onPressed: onPlay,
+        ),
+        verticalSpace(AppSpacing.md),
+        // Centred under a full-width button, which is the one place a caption
+        // can sit without looking like the start of the next section.
+        SizedBox(
+          width: double.infinity,
+          child: Text(
+            '${quickMatchMode.label} · ${quickMatchMode.tagline} · vs the bot',
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.labelSmall.copyWith(
+              fontWeight: FontWeight.w500,
+              color: palette.textMuted,
+            ),
+          ),
+        ),
       ],
     );
   }

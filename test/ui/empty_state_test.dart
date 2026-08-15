@@ -11,6 +11,7 @@ import 'package:spella/ui/common/app_theme.dart';
 import 'package:spella/ui/views/friends/friends_view.dart';
 import 'package:spella/ui/views/home/home_view.dart';
 import 'package:spella/ui/views/ranks/ranks_view.dart';
+import 'package:spella/ui/widgets/app_search_field.dart';
 import 'package:spella/ui/widgets/leaderboard_row.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -89,27 +90,42 @@ void main() {
       await tester.pumpWidget(_hostApp(const HomeView()));
       await tester.pump();
 
-      expect(find.text('Start New Game'), findsOneWidget);
-      expect(find.text('Nothing yet'), findsOneWidget);
+      expect(find.text('Quick match'), findsOneWidget);
+      expect(find.text('Choose a mode'), findsOneWidget);
 
-      // No board to preview, so the whole section stands down instead of
+      // Every section that would have nothing in it stands down, rather than
       // leaving a heading over blank space.
+      expect(find.text('Activity'), findsNothing);
       expect(find.text('Top spellers'), findsNothing);
       expect(find.byType(LeaderboardRow), findsNothing);
 
-      // And nothing is waiting on the player, so that strip is absent too.
-      expect(find.text('Waiting on you'), findsNothing);
+      // Including the record: a fresh account has no games to summarise.
+      expect(find.text('Your record'), findsNothing);
+
+      // In their place, one prompt that has somewhere to send the player. It
+      // sits below the fold, and a sliver list does not build what it has not
+      // scrolled to, so reaching it is part of the assertion.
+      await tester.scrollUntilVisible(find.text('Find people to play'), 200);
+      expect(find.text('Find people to play'), findsOneWidget);
     });
 
-    testWidgets('friends explains what adding people would do', (
+    testWidgets('friends says what it cannot do, and what it can', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(_hostApp(const FriendsView()));
       await tester.pump();
 
       expect(find.text('No friends yet'), findsOneWidget);
-      expect(find.text('Game Invites'), findsNothing);
-      expect(find.text('Suggested matches'), findsNothing);
+      expect(find.text('Challenges'), findsNothing);
+      expect(find.text('People to play'), findsNothing);
+
+      // A search field over an empty list is an affordance that never pays out.
+      expect(find.byType(AppSearchField), findsNothing);
+
+      // The two ways to actually get a game today, both of which work with no
+      // account and no connection.
+      expect(find.text('Pass & Play'), findsOneWidget);
+      expect(find.text('Play the bot'), findsOneWidget);
     });
 
     testWidgets('ranks does not crown the player for being alone', (

@@ -20,6 +20,7 @@ class MatchHeader extends StatelessWidget {
     required this.roundNumber,
     required this.totalRounds,
     required this.onLeave,
+    this.onPause,
     super.key,
   });
 
@@ -34,6 +35,11 @@ class MatchHeader extends StatelessWidget {
   final int roundNumber;
   final int totalRounds;
   final VoidCallback onLeave;
+
+  /// Shows a pause control when non-null. Offered in a party game, where the
+  /// device is going round a table and somebody always needs a minute; not in
+  /// a duel, where stopping the clock to think would be the whole exploit.
+  final VoidCallback? onPause;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +91,16 @@ class MatchHeader extends StatelessWidget {
                   ),
                 ),
               ),
+              if (onPause != null) ...<Widget>[
+                horizontalSpace(AppSpacing.sm),
+                AppIconButton(
+                  icon: Icons.pause_rounded,
+                  size: 40,
+                  isTransparent: true,
+                  tooltip: 'Pause',
+                  onPressed: onPause,
+                ),
+              ],
             ],
           ),
         ),

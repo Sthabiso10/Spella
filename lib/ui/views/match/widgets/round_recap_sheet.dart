@@ -6,10 +6,12 @@ import 'package:spella/core/models/word_play.dart';
 import 'package:spella/ui/common/app_palette.dart';
 import 'package:spella/ui/common/app_typography.dart';
 import 'package:spella/ui/common/ui_helpers.dart';
+import 'package:spella/ui/views/match/widgets/match_overlays.dart';
 import 'package:spella/ui/widgets/app_badge.dart';
 import 'package:spella/ui/widgets/app_buttons.dart';
 import 'package:spella/ui/widgets/app_card.dart';
 import 'package:spella/ui/widgets/app_states.dart';
+import 'package:spella/ui/widgets/count_up_text.dart';
 
 /// End of round summary: both words, how the points were earned, and what the
 /// best play would have been.
@@ -68,7 +70,8 @@ class RoundRecapSheet extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: SingleChildScrollView(
-          child: AppCard(
+          child: OverlayEntrance(
+            child: AppCard(
             floats: true,
             padding: const EdgeInsets.all(AppSpacing.xl),
             child: Column(
@@ -126,6 +129,7 @@ class RoundRecapSheet extends StatelessWidget {
                   onPressed: onContinue,
                 ),
               ],
+            ),
             ),
           ),
         ),
@@ -305,8 +309,12 @@ class _PlayColumn extends StatelessWidget {
             ),
           ),
           verticalSpace(AppSpacing.sm),
-          Text(
-            '${play?.score ?? 0}',
+          // Rolls up rather than appearing. Finding out what the round was
+          // worth is the point of the sheet, and a figure that simply sits
+          // there was already old news by the time it was read.
+          CountUpText(
+            value: play?.score ?? 0,
+            from: 0,
             style: AppTextStyles.scoreLarge.copyWith(
               fontSize: 40,
               color: isWinner ? palette.accent : palette.textSecondary,

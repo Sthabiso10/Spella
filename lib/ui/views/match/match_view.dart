@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:spella/app/app.router.dart';
 import 'package:spella/ui/common/app_palette.dart';
-import 'package:spella/ui/common/app_typography.dart';
 import 'package:spella/ui/common/ui_helpers.dart';
 import 'package:spella/ui/views/match/match_viewmodel.dart';
 import 'package:spella/ui/views/match/widgets/match_header.dart';
 import 'package:spella/ui/views/match/widgets/match_overlays.dart';
+import 'package:spella/ui/views/match/widgets/play_status_panel.dart';
 import 'package:spella/ui/views/match/widgets/power_up_bar.dart';
 import 'package:spella/ui/views/match/widgets/rack_row.dart';
 import 'package:spella/ui/views/match/widgets/round_recap_sheet.dart';
 import 'package:spella/ui/views/match/widgets/scoreboard_card.dart';
 import 'package:spella/ui/views/match/widgets/word_builder.dart';
 import 'package:spella/ui/widgets/app_buttons.dart';
-import 'package:spella/ui/widgets/count_up_text.dart';
 import 'package:spella/ui/widgets/page_width.dart';
 import 'package:spella/ui/widgets/shake.dart';
 import 'package:stacked/stacked.dart';
@@ -71,35 +70,7 @@ class MatchView extends StackedView<MatchViewModel> {
                 ),
               ),
             ),
-            if (viewModel.phase == MatchPhase.dealing)
-              Positioned.fill(
-                child: DealOverlay(
-                  roundNumber: viewModel.roundNumber,
-                  totalRounds: viewModel.totalRounds,
-                  rackSize: viewModel.slotCount,
-                ),
-              ),
-            if (viewModel.phase == MatchPhase.opponentThinking)
-              Positioned.fill(
-                child: OpponentThinkingOverlay(opponent: viewModel.opponent),
-              ),
-            if (viewModel.phase == MatchPhase.roundRecap)
-              Positioned.fill(
-                child: MatchScrim(
-                  child: RoundRecapSheet(
-                    roundNumber: viewModel.roundNumber,
-                    me: viewModel.me,
-                    opponent: viewModel.opponent,
-                    myPlay: viewModel.myPlay,
-                    opponentPlay: viewModel.opponentPlay,
-                    bestPossibleWord: viewModel.bestPossibleWord,
-                    definition: viewModel.roundDefinition,
-                    isLoadingDefinition: viewModel.isLoadingDefinition,
-                    isFinalRound: viewModel.isFinalRound,
-                    onContinue: viewModel.continueFromRecap,
-                  ),
-                ),
-              ),
+            MatchOverlaySlot(child: _overlayFor(viewModel)),
           ],
         ),
       ),
@@ -112,6 +83,52 @@ class MatchView extends StackedView<MatchViewModel> {
 
   @override
   void onViewModelReady(MatchViewModel viewModel) => viewModel.initialise();
+
+  /// Whichever overlay the current phase calls for, or `null` for a clear
+  /// board. Every one is keyed so the switcher cross-fades between them
+  /// rather than swapping their contents underneath a single fade.
+  Widget? _overlayFor(MatchViewModel viewModel) {
+    switch (viewModel.phase) {
+      case MatchPhase.dealing:
+        return DealOverlay(
+          key: ValueKey<String>('deal-${viewModel.roundNumber}'),
+          roundNumber: viewModel.roundNumber,
+          totalRounds: viewModel.totalRounds,
+          rackSize: viewModel.slotCount,
+        );
+      case MatchPhase.paused:
+        return PausedOverlay(
+          key: const ValueKey<String>('paused'),
+          secondsRemaining: viewModel.secondsRemaining,
+          onResume: viewModel.resumeFromPause,
+          onQuit: viewModel.requestQuit,
+        );
+      case MatchPhase.opponentThinking:
+        return OpponentThinkingOverlay(
+          key: const ValueKey<String>('thinking'),
+          opponent: viewModel.opponent,
+        );
+      case MatchPhase.roundRecap:
+        return MatchScrim(
+          key: ValueKey<String>('recap-${viewModel.roundNumber}'),
+          child: RoundRecapSheet(
+            roundNumber: viewModel.roundNumber,
+            me: viewModel.me,
+            opponent: viewModel.opponent,
+            myPlay: viewModel.myPlay,
+            opponentPlay: viewModel.opponentPlay,
+            bestPossibleWord: viewModel.bestPossibleWord,
+            definition: viewModel.roundDefinition,
+            isLoadingDefinition: viewModel.isLoadingDefinition,
+            isFinalRound: viewModel.isFinalRound,
+            onContinue: viewModel.continueFromRecap,
+          ),
+        );
+      case MatchPhase.playing:
+      case MatchPhase.finishing:
+        return null;
+    }
+  }
 }
 
 /// The live verdict on the word being built, and the power-up bar.
@@ -128,9 +145,6 @@ class _PlayStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppPalette palette = context.palette;
-    final bool isValid = viewModel.validation.isValid;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Column(
@@ -138,28 +152,10 @@ class _PlayStatus extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Center(
-              child: AnimatedSwitcher(
-                duration: AppMotion.quick,
-                switchInCurve: AppMotion.enter,
-                transitionBuilder: (Widget child, Animation<double> animation) =>
-                    FadeTransition(
-                      opacity: animation,
-                      child: ScaleTransition(
-                        scale: Tween<double>(begin: 0.96, end: 1).animate(animation),
-                        child: child,
-                      ),
-                    ),
-                child: isValid
-                    ? _ScorePreview(
-                        key: const ValueKey<String>('valid'),
-                        score: viewModel.validation.score,
-                      )
-                    : Text(
-                        viewModel.validation.message,
-                        key: ValueKey<String>(viewModel.validation.message),
-                        textAlign: TextAlign.center,
-                        style: AppTextStyles.body.copyWith(color: palette.textMuted),
-                      ),
+              child: PlayStatusPanel(
+                isValid: viewModel.validation.isValid,
+                score: viewModel.validation.score,
+                message: viewModel.validation.message,
               ),
             ),
           ),
@@ -171,38 +167,6 @@ class _PlayStatus extends StatelessWidget {
           verticalSpace(AppSpacing.xl),
         ],
       ),
-    );
-  }
-}
-
-/// What the word on the board is currently worth.
-class _ScorePreview extends StatelessWidget {
-  const _ScorePreview({required this.score, super.key});
-
-  final int score;
-
-  @override
-  Widget build(BuildContext context) {
-    final AppPalette palette = context.palette;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        // Pops on every change, so adding a letter that jumps the score is
-        // something the player feels rather than has to notice.
-        PulseOnChange(
-          value: score,
-          child: Text(
-            '+$score',
-            style: AppTextStyles.scoreLarge.copyWith(color: palette.success),
-          ),
-        ),
-        verticalSpace(AppSpacing.sm),
-        Text(
-          'POINTS IF YOU PLAY NOW',
-          style: AppTextStyles.overline.copyWith(color: palette.textMuted),
-        ),
-      ],
     );
   }
 }
@@ -225,6 +189,7 @@ class _PlayArea extends StatelessWidget {
           Shake(
             trigger: viewModel.showRejection,
             child: WordBuilder(
+              isRevealed: viewModel.isBoardRevealed,
               slotCount: viewModel.slotCount,
               placedTiles: viewModel.placedTiles,
               bonuses: viewModel.bonuses,
@@ -233,6 +198,7 @@ class _PlayArea extends StatelessWidget {
           ),
           verticalSpace(AppSpacing.xl),
           RackRow(
+            isRevealed: viewModel.isBoardRevealed,
             rack: viewModel.rack,
             placedTiles: viewModel.placedTiles,
             onTileTapped: viewModel.onRackTileTapped,

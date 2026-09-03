@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Raw word lists used to build assets/dictionary/words_en.txt. Kept locally,
+# not tracked: ~9MB of source data the app never reads at runtime.
+/f9.txt
+/filtered.txt
+/words_alpha.txt

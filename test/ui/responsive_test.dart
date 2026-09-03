@@ -114,6 +114,7 @@ void main() {
       testWidgets('a marathon match lays out', (WidgetTester tester) async {
         await pumpAt(tester, _matchView(GameMode.marathon), viewport.value);
         await tester.pump(const Duration(milliseconds: 1200));
+        await tester.pump(const Duration(milliseconds: 400));
 
         expect(find.byType(MatchView), findsOneWidget);
       });
@@ -134,6 +135,10 @@ void main() {
         await pumpAt(tester, _partyMatch(), viewport.value);
         await tester.tap(find.text("I'm ready"));
         await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(milliseconds: 400));
 
         expect(find.text('YOUR TURN'), findsOneWidget);
       });

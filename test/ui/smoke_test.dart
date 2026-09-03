@@ -109,8 +109,10 @@ void main() {
       await tester.pump();
       expect(find.text('ROUND 1'), findsOneWidget);
 
-      // Then the clock starts and the rack becomes interactive.
+      // Then the deal overlay fades out - it has an exit now, not just an
+      // entrance - and the rack becomes interactive.
       await tester.pump(const Duration(milliseconds: 1200));
+      await _settle(tester);
       expect(find.text('ROUND 1'), findsNothing);
       expect(_rackTiles, findsNWidgets(GameMode.classic.rackSize));
       expect(_placedTiles, findsNothing);
@@ -131,6 +133,7 @@ void main() {
     ) async {
       await tester.pumpWidget(hostApp(_matchView(GameMode.marathon)));
       await tester.pump(const Duration(milliseconds: 1200));
+      await _settle(tester);
 
       expect(_rackTiles, findsNWidgets(GameMode.marathon.rackSize));
       expect(find.byType(WordSlotView), findsNWidgets(GameMode.marathon.rackSize));
@@ -141,6 +144,13 @@ void main() {
 Widget _matchView(GameMode mode) => MatchView(
   arguments: router.MatchViewArguments(mode: mode, opponent: _opponent),
 );
+
+/// Lets an overlay finish fading in or out.
+Future<void> _settle(WidgetTester tester) async {
+  for (int frame = 0; frame < 3; frame++) {
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+}
 
 /// Tiles still available in the rack.
 final Finder _rackTiles = find.byWidgetPredicate(

@@ -1,6 +1,6 @@
 <div align="center">
 
-# Spella
+<img src="assets/branding/spella_logo_horizontal_readme.png" alt="Spella" width="380">
 
 A fast-paced word game built in Flutter. Players get a rack of letters and a
 countdown, and race to build the highest-scoring word they can see.
@@ -194,6 +194,8 @@ while the phone is in a pocket.
 ---
 
 ## Design
+
+<img src="assets/branding/spella_icon.png" alt="Spella icon" width="72" align="right">
 
 Dark-first, built on a token layer rather than ad-hoc values: `AppPalette`,
 `AppTypography`, `AppSpacing`, `AppRadius`, `AppMotion`. A light theme is kept

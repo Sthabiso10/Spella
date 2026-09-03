@@ -1,13 +1,44 @@
+<div align="center">
+
 # Spella
 
 A fast-paced word game built in Flutter. Players get a rack of letters and a
 countdown, and race to build the highest-scoring word they can see.
 
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.12-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-3DDC84)](#running-it)
+[![Tests](https://img.shields.io/badge/Tests-188%20passing-2ea44f)](#testing)
+[![Architecture](https://img.shields.io/badge/Architecture-MVVM%20%2F%20Stacked-6f42c1)](#architecture)
+
+</div>
+
 Spella is a portfolio project written to production standards: a layered
 architecture, a pure-Dart rules engine with no Flutter imports, dependency
 injection behind swappable interfaces, and 188 passing tests.
 
-**Stack:** Flutter · Dart 3.12 · Stacked (MVVM) · get_it · Android + iOS
+## Why this repo is worth a look
+
+- **Engine has zero Flutter imports.** The rules — scoring, dictionary,
+  rack generation, the bot — are pure Dart, unit-tested without a widget tree.
+- **188 tests**, ~2,900 lines of test against 13,600 lines of app, covering
+  unit, view model, widget and responsive layers.
+- **Everything that varies is data, not code.** Game modes live in a single
+  enum; adding one never touches the engine or the UI.
+- **Built for a backend that doesn't exist yet.** Every network-shaped concern
+  sits behind an interface (`OpponentService`, `PlayerService`,
+  `SocialService`) so swapping in real multiplayer is a locator change, not a
+  rewrite.
+
+## Contents
+
+- [The game](#the-game)
+- [How to play](#how-to-play)
+- [Architecture](#architecture)
+- [Design](#design)
+- [Testing](#testing)
+- [Running it](#running-it)
+- [Roadmap](#roadmap)
 
 ---
 
@@ -28,7 +59,7 @@ injection behind swappable interfaces, and 188 passing tests.
 | **Classic** | 5 | 7 tiles | 45s |
 | **Blitz** | 3 | 6 tiles | 25s |
 | **Marathon** | 7 | 9 tiles | 60s |
-| **Daily Challenge** | 1 | 8 tiles | 90s |
+| **Daily Challenge**¹ | 1 | 8 tiles | 90s |
 | **Pass & Play** | 3 | 7 tiles | 45s |
 
 Everything that varies between modes lives in a single enum, so adding a mode
@@ -39,6 +70,52 @@ the same rack. Guests are a separate type from real players, which is what
 stops party scores leaking into anyone's account. Each turn is counted in,
 covers the board during the handoff so nobody reads the rack over your
 shoulder, and ends on your own result before the device moves on.
+
+¹ Modeled end-to-end in the engine but not yet wired into the mode picker —
+see [Roadmap](#roadmap).
+
+---
+
+## How to play
+
+**Start a match.** From Home, tap **Play** for an instant Classic match
+against the bot, or pick a mode from the grid — Classic, Blitz and Marathon
+start right away against the bot; **Pass & Play** goes to a roster screen
+first, where the host adds 2–6 players by name before the game deals.
+
+**Build a word.** Tap rack tiles in the order you want them — each tap fills
+the next open slot on the board; tapping a placed tile sends it back to the
+rack. The status panel above updates live as you build, so you always know
+whether the current word is valid and what it's worth before you commit.
+**Play Word** submits it, **Clear** empties the board, and shuffle reorders
+the rack if a fresh look helps. Running out the clock auto-submits a valid
+word left on the board, or passes the round.
+
+**Spend a power-up.** Once per round, pay coins to reveal a **Hint** (spells
+out a strong word for you), buy 15 seconds with **Freeze**, or **Swap** your
+unused tiles for a fresh draw. A power-up only charges you if it actually
+changes something — tapping Swap with every tile already placed costs
+nothing.
+
+**See the round out.** Submitting cuts to the opponent "thinking," then a
+recap: both words side by side with their scoring breakdown, the best word
+that rack could have made, and a definition for whichever word is worth
+showing.
+
+**Pass & Play handoff.** Between turns the board is hidden entirely — not
+just visually, it's absent from the widget tree — behind a screen naming the
+next player, who confirms they're ready and gets a three-second count-in
+before the clock starts, so nobody is dropped onto a timer already running.
+Each player sees their own result before the phone moves on.
+
+**After the match.** Results show the final score and each side's best word,
+plus — outside Pass & Play, which pays out nothing so a guest's turn can't
+land in the host's account — coins, gems and XP earned. Coins buy power-ups
+mid-match; gems unlock avatars in the **Shop**. **Ranks** is a leaderboard and
+**Friends** covers search, challenges and activity; both are fully built
+against a `SocialService` interface that currently returns nothing, so they
+render real empty states rather than fake sample data until a backend is
+live.
 
 ---
 

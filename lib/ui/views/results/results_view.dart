@@ -215,6 +215,8 @@ class _FinalPlayer extends StatelessWidget {
         FittedBox(
           child: CountUpText(
             value: score,
+            // The half second this takes is the whole reward for the match.
+            from: 0,
             style: AppTextStyles.scoreLarge.copyWith(
               color: isWinner ? palette.textPrimary : palette.textSecondary,
             ),

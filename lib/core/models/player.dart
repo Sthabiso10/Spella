@@ -86,10 +86,52 @@ class Player {
     );
   }
 
+  /// Full value equality, not identity by [id].
+  ///
+  /// This matters more than it looks. The signed-in player is held in a
+  /// stacked `ReactiveValue`, whose setter drops the write when the new value
+  /// `==` the old one. With equality defined as "same id", every progression
+  /// update - coins spent on a power-up, XP and rewards from a finished match,
+  /// an avatar bought in the shop - compared equal to the player it was
+  /// derived from and was silently discarded. Comparing the whole record is
+  /// what makes a change actually register as one.
+  ///
+  /// To ask whether two references are the same person, compare [id] directly.
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) || (other is Player && other.id == id);
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Player &&
+        other.id == id &&
+        other.username == username &&
+        other.avatar == avatar &&
+        other.level == level &&
+        other.xp == xp &&
+        other.coins == coins &&
+        other.gems == gems &&
+        other.wins == wins &&
+        other.losses == losses &&
+        other.streak == streak &&
+        other.isOnline == isOnline &&
+        other.isBot == isBot &&
+        other.ownedAvatars.length == ownedAvatars.length &&
+        other.ownedAvatars.containsAll(ownedAvatars);
+  }
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => Object.hash(
+    id,
+    username,
+    avatar,
+    level,
+    xp,
+    coins,
+    gems,
+    wins,
+    losses,
+    streak,
+    isOnline,
+    isBot,
+    Object.hashAllUnordered(ownedAvatars),
+  );
 }

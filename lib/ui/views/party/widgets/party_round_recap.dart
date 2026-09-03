@@ -3,10 +3,12 @@ import 'package:spella/core/models/word_play.dart';
 import 'package:spella/ui/common/app_palette.dart';
 import 'package:spella/ui/common/app_typography.dart';
 import 'package:spella/ui/common/ui_helpers.dart';
+import 'package:spella/ui/views/match/widgets/match_overlays.dart';
 import 'package:spella/ui/views/party/party_match_viewmodel.dart';
 import 'package:spella/ui/widgets/app_avatar.dart';
 import 'package:spella/ui/widgets/app_buttons.dart';
 import 'package:spella/ui/widgets/app_card.dart';
+import 'package:spella/ui/widgets/count_up_text.dart';
 
 /// Everyone's word for the round, side by side.
 ///
@@ -41,7 +43,8 @@ class PartyRoundRecap extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: AppCard(
+        child: OverlayEntrance(
+          child: AppCard(
           floats: true,
           padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
@@ -83,6 +86,7 @@ class PartyRoundRecap extends StatelessWidget {
                 onPressed: onContinue,
               ),
             ],
+          ),
           ),
         ),
       ),
@@ -148,8 +152,9 @@ class _RecapLine extends StatelessWidget {
             ),
           ),
           horizontalSpace(AppSpacing.md),
-          Text(
-            '${play?.score ?? 0}',
+          CountUpText(
+            value: play?.score ?? 0,
+            from: 0,
             style: AppTextStyles.score.copyWith(
               fontSize: 24,
               color: line.isWinner ? palette.accent : palette.textSecondary,

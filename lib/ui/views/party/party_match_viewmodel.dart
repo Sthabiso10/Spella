@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/widgets.dart';
 import 'package:spella/app/app.locator.dart';
 import 'package:spella/app/app.router.dart';
 import 'package:spella/core/models/game_mode.dart';
@@ -11,6 +12,7 @@ import 'package:spella/core/models/slot_bonus.dart';
 import 'package:spella/core/models/word_play.dart';
 import 'package:spella/core/services/game_engine_service.dart';
 import 'package:spella/core/services/haptic_service.dart';
+import 'package:spella/core/services/round_clock.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:uuid/uuid.dart';
@@ -20,8 +22,18 @@ enum PartyPhase {
   /// The device is being handed over. Nothing playable is on screen.
   handoff,
 
+  /// The new player has the device and is being counted in.
+  countdown,
+
   /// The clock is running for whoever is holding it.
   playing,
+
+  /// Somebody asked for a minute, or the app went to the background.
+  paused,
+
+  /// The turn is over and its author is being shown what it was worth,
+  /// before the device moves on.
+  turnResult,
 
   /// Everyone has played the round; the words are on the table.
   roundRecap,
@@ -50,7 +62,13 @@ class PartyRoundLine {
 /// through a queue of people. What they share is the engine underneath - the
 /// same rack generator, the same dictionary, the same scoring - so a word is
 /// worth exactly what it would be worth in a ranked game.
-class PartyMatchViewModel extends BaseViewModel {
+///
+/// The turn cycle is deliberately longer than a duel's. A duel hands straight
+/// from one round to the next because the same person is holding the phone
+/// throughout; here the device changes hands every turn, so each turn is
+/// counted in, and ends on the player's own result rather than dumping them
+/// into the next person's handoff before they have seen what they scored.
+class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
   PartyMatchViewModel({required this.roster});
 
   /// Turn order, as set on the setup screen.
@@ -61,17 +79,35 @@ class PartyMatchViewModel extends BaseViewModel {
   final DialogService _dialog = locator<DialogService>();
   final HapticService _haptics = locator<HapticService>();
 
+  /// Seconds counted off before a turn starts.
+  static const int countdownSeconds = 3;
+
   late PartyMatch _match;
   late RoundBoard _board;
 
-  Timer? _clock;
+  late final RoundClock _clock = RoundClock(
+    // The speed bonus shrinks with the clock, so the preview has to follow.
+    onTick: _revalidate,
+    onExpired: _timeUp,
+  );
+
+  Timer? _countdown;
+  int _countdownRemaining = 0;
+
   PartyPhase _phase = PartyPhase.handoff;
   PlayValidation _validation = const PlayValidation.invalid(
     word: '',
     reason: PlayRejection.empty,
   );
-  int _secondsRemaining = 0;
   bool _showRejection = false;
+
+  /// The turn just finished, held so its author can be shown the result
+  /// before the device moves on.
+  WordPlay? _lastPlay;
+  PartyPlayer? _lastPlayer;
+
+  /// `true` while a dialog is up and the clock should not be running.
+  bool _isSuspended = false;
 
   GameMode get mode => GameMode.party;
 
@@ -84,6 +120,9 @@ class PartyMatchViewModel extends BaseViewModel {
   /// Whoever is holding the device.
   PartyPlayer get currentPlayer => _match.currentPlayer;
 
+  /// Whoever plays after them, or `null` at the end of a round.
+  PartyPlayer? get nextPlayer => _match.nextPlayer;
+
   int get turnNumber => _match.turnIndex + 1;
 
   int get playerCount => _match.players.length;
@@ -92,12 +131,17 @@ class PartyMatchViewModel extends BaseViewModel {
 
   int get totalRounds => mode.totalRounds;
 
-  int get secondsRemaining => _secondsRemaining;
+  int get secondsRemaining => _clock.remaining;
 
-  double get clockProgress =>
-      mode.secondsPerRound == 0 ? 0 : _secondsRemaining / mode.secondsPerRound;
+  double get clockProgress => _clock.progress;
 
-  bool get isTimeCritical => _secondsRemaining <= 10;
+  bool get isTimeCritical =>
+      _clock.remaining <= 10 && _phase == PartyPhase.playing;
+
+  /// Seconds left on the "get ready" count-in.
+  int get countdownRemaining => _countdownRemaining;
+
+  bool get isPaused => _phase == PartyPhase.paused;
 
   List<LetterTile> get rack => _board.rack;
 
@@ -114,6 +158,19 @@ class PartyMatchViewModel extends BaseViewModel {
 
   bool get canClear => isInteractive && !_board.isEmpty;
 
+  /// Pausing is offered here and not in a duel on purpose. A duel is one
+  /// person racing a clock, and a pause button would just be a way to stop
+  /// the clock and think; a party game is a device going round a table, where
+  /// somebody needing a minute is normal and everybody can see it happen.
+  bool get canPause => _phase == PartyPhase.playing;
+
+  /// The board is only built once whoever is holding the device has said they
+  /// are ready, so nobody reads the rack over the previous player's shoulder.
+  bool get isBoardRevealed =>
+      _phase == PartyPhase.playing ||
+      _phase == PartyPhase.turnResult ||
+      _phase == PartyPhase.roundRecap;
+
   String get bestPossibleWord => _match.currentRound.deal.bestPossibleWord.toUpperCase();
 
   bool get isFinalRound => _match.isFinalRound;
@@ -123,6 +180,19 @@ class PartyMatchViewModel extends BaseViewModel {
 
   /// What the player holding the device has banked so far.
   int get currentPlayerTotal => _match.totalFor(currentPlayer.id);
+
+  /// The turn that just finished.
+  WordPlay? get lastPlay => _lastPlay;
+
+  /// Who played it.
+  PartyPlayer? get lastPlayer => _lastPlayer;
+
+  /// Their running total, including the turn just played.
+  int get lastPlayerTotal =>
+      _lastPlayer == null ? 0 : _match.totalFor(_lastPlayer!.id);
+
+  /// `true` when the turn just played was the last one of the round.
+  bool get isRoundComplete => _match.isRoundComplete;
 
   /// The round just played, highest score first.
   ///
@@ -149,6 +219,7 @@ class PartyMatchViewModel extends BaseViewModel {
 
   /// Sets the game up and queues the first handoff.
   void initialise() {
+    WidgetsBinding.instance.addObserver(this);
     _match = PartyMatch(
       id: const Uuid().v4(),
       mode: mode,
@@ -158,12 +229,47 @@ class PartyMatchViewModel extends BaseViewModel {
     _prepareTurn();
   }
 
+  /// Holds the game when the app leaves the foreground, so a turn cannot run
+  /// down while the phone is in somebody's pocket.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) return;
+    if (_phase == PartyPhase.playing || _phase == PartyPhase.countdown) {
+      pauseTurn();
+    }
+  }
+
   /// Called from the handoff screen once the next player has the device.
   void beginTurn() {
     if (_phase != PartyPhase.handoff) return;
+    _startCountdown();
+  }
 
-    _setPhase(PartyPhase.playing);
-    _startClock();
+  /// Hands the turn on without playing it, for somebody who is not at the
+  /// table. Their round is recorded as a pass, exactly as if they had run out
+  /// of time, so the standings stay honest.
+  void skipTurn() {
+    if (_phase != PartyPhase.handoff) return;
+
+    _haptics.notify();
+    _bankPlay(WordPlay.passed(playerId: currentPlayer.id, secondsTaken: 0));
+    _advanceAfterTurn();
+  }
+
+  /// Stops the clock mid-turn and puts a pause screen over the board.
+  void pauseTurn() {
+    if (_phase != PartyPhase.playing && _phase != PartyPhase.countdown) return;
+
+    _stopCountdown();
+    _clock.pause();
+    _setPhase(PartyPhase.paused);
+  }
+
+  /// Picks the turn back up, counting the player in again so they are not
+  /// dropped straight back onto a running clock.
+  void resumeTurn() {
+    if (_phase != PartyPhase.paused) return;
+    _startCountdown();
   }
 
   void onRackTileTapped(LetterTile tile) {
@@ -208,12 +314,12 @@ class PartyMatchViewModel extends BaseViewModel {
     }
 
     _haptics.success();
-    _recordPlay(
+    _endTurn(
       WordPlay(
         playerId: currentPlayer.id,
         word: _validation.word,
         breakdown: _validation.breakdown,
-        secondsTaken: mode.secondsPerRound - _secondsRemaining,
+        secondsTaken: _clock.elapsed,
       ),
     );
   }
@@ -227,12 +333,15 @@ class PartyMatchViewModel extends BaseViewModel {
     if (!isInteractive) return;
 
     _haptics.notify();
-    _recordPlay(
-      WordPlay.passed(
-        playerId: currentPlayer.id,
-        secondsTaken: mode.secondsPerRound - _secondsRemaining,
-      ),
+    _endTurn(
+      WordPlay.passed(playerId: currentPlayer.id, secondsTaken: _clock.elapsed),
     );
+  }
+
+  /// Moves the device on from the turn result.
+  void continueFromTurn() {
+    if (_phase != PartyPhase.turnResult) return;
+    _advanceAfterTurn();
   }
 
   /// Moves to the next round, or ends the game after the last one.
@@ -248,9 +357,7 @@ class PartyMatchViewModel extends BaseViewModel {
     _match = _match.copyWith(
       rounds: <PartyRound>[
         ..._match.rounds,
-        PartyRound(
-          deal: _engine.dealRound(mode: mode, index: nextIndex),
-        ),
+        PartyRound(deal: _engine.dealRound(mode: mode, index: nextIndex)),
       ],
       currentRoundIndex: nextIndex,
       turnIndex: 0,
@@ -262,24 +369,27 @@ class PartyMatchViewModel extends BaseViewModel {
   Future<void> requestQuit() async {
     if (_phase == PartyPhase.finishing) return;
 
-    _stopClock();
+    _suspend();
     final DialogResponse<dynamic>? response = await _dialog.showConfirmationDialog(
       title: 'End the game?',
       description: 'Everyone loses their scores.',
       confirmationTitle: 'End game',
       cancelTitle: 'Keep playing',
     );
+    if (disposed) return;
 
     if (response?.confirmed ?? false) {
       _navigation.back();
       return;
     }
-    if (_phase == PartyPhase.playing) _startClock();
+    _release();
   }
 
   @override
   void dispose() {
-    _stopClock();
+    WidgetsBinding.instance.removeObserver(this);
+    _stopCountdown();
+    _clock.dispose();
     super.dispose();
   }
 
@@ -290,19 +400,65 @@ class PartyMatchViewModel extends BaseViewModel {
   /// reading it over the last player's shoulder.
   void _prepareTurn() {
     _board = _engine.boardForRound(_match.currentRound.deal);
-    _secondsRemaining = mode.secondsPerRound;
+    _clock.reset(mode.secondsPerRound);
+    _stopCountdown();
     _setPhase(PartyPhase.handoff);
     _revalidate();
   }
 
-  /// Banks [play] and moves the device on.
-  void _recordPlay(WordPlay play) {
-    _stopClock();
+  /// Counts the player in, then starts the clock.
+  ///
+  /// The handoff button used to start the round on the same frame it was
+  /// tapped, which meant the clock was already running before the player had
+  /// finished looking down at the rack.
+  void _startCountdown() {
+    _stopCountdown();
+    _countdownRemaining = countdownSeconds;
+    _setPhase(PartyPhase.countdown);
 
+    _countdown = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
+      if (disposed) {
+        timer.cancel();
+        return;
+      }
+
+      _countdownRemaining--;
+      if (_countdownRemaining <= 0) {
+        _stopCountdown();
+        _setPhase(PartyPhase.playing);
+        _clock.start();
+        _haptics.notify();
+        return;
+      }
+      rebuildUi();
+    });
+  }
+
+  void _stopCountdown() {
+    _countdown?.cancel();
+    _countdown = null;
+    _countdownRemaining = 0;
+  }
+
+  /// Banks [play] and shows its author what it was worth.
+  void _endTurn(WordPlay play) {
+    _clock.stop();
+    _bankPlay(play);
+    _setPhase(PartyPhase.turnResult);
+  }
+
+  /// Records [play] against the current player without moving the device on.
+  void _bankPlay(WordPlay play) {
     final List<PartyRound> rounds = List<PartyRound>.of(_match.rounds);
     rounds[_match.currentRoundIndex] = _match.currentRound.withPlay(play.playerId, play);
-    _match = _match.copyWith(rounds: rounds);
 
+    _lastPlay = play;
+    _lastPlayer = currentPlayer;
+    _match = _match.copyWith(rounds: rounds);
+  }
+
+  /// Either recaps the round or hands the device to the next player.
+  void _advanceAfterTurn() {
     if (_match.isRoundComplete) {
       _haptics.notify();
       _setPhase(PartyPhase.roundRecap);
@@ -313,48 +469,45 @@ class PartyMatchViewModel extends BaseViewModel {
     _prepareTurn();
   }
 
-  void _startClock() {
-    _stopClock();
-    _clock = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
-      if (disposed) {
-        timer.cancel();
-        return;
-      }
-
-      _secondsRemaining--;
-      if (_secondsRemaining <= 0) {
-        _secondsRemaining = 0;
-        _stopClock();
-        _timeUp();
-        return;
-      }
-
-      // The speed bonus shrinks with the clock, so the preview has to follow.
-      _revalidate();
-    });
-  }
-
-  void _stopClock() {
-    _clock?.cancel();
-    _clock = null;
-  }
-
   /// Plays whatever is on the board when time runs out, or passes.
   void _timeUp() {
+    if (disposed) return;
     _haptics.error();
-    _recordPlay(
+    _endTurn(
       _validation.isValid
           ? WordPlay(
               playerId: currentPlayer.id,
               word: _validation.word,
               breakdown: _validation.breakdown,
-              secondsTaken: mode.secondsPerRound,
+              secondsTaken: _clock.elapsed,
             )
           : WordPlay.passed(
               playerId: currentPlayer.id,
-              secondsTaken: mode.secondsPerRound,
+              secondsTaken: _clock.elapsed,
             ),
     );
+  }
+
+  /// Stops the clock for something already covering the board.
+  void _suspend() {
+    if (_isSuspended) return;
+    _isSuspended = true;
+    _stopCountdown();
+    _clock.pause();
+  }
+
+  /// Hands the turn back after a [_suspend].
+  void _release() {
+    if (!_isSuspended) return;
+    _isSuspended = false;
+
+    // A turn interrupted part way through is counted back in rather than
+    // resumed on the spot, for the same reason it was counted in to start.
+    if (_phase == PartyPhase.countdown) {
+      _startCountdown();
+      return;
+    }
+    if (_phase == PartyPhase.playing) _clock.resume();
   }
 
   Future<void> _finish() async {
@@ -385,7 +538,7 @@ class PartyMatchViewModel extends BaseViewModel {
     _validation = _engine.validate(
       board: _board,
       mode: mode,
-      secondsRemaining: _secondsRemaining,
+      secondsRemaining: _clock.remaining,
     );
     rebuildUi();
   }

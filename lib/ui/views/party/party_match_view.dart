@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spella/app/app.router.dart';
+import 'package:spella/core/models/party.dart';
+import 'package:spella/core/models/word_play.dart';
 import 'package:spella/ui/common/app_palette.dart';
 import 'package:spella/ui/common/app_typography.dart';
 import 'package:spella/ui/common/ui_helpers.dart';
@@ -9,7 +11,9 @@ import 'package:spella/ui/views/match/widgets/rack_row.dart';
 import 'package:spella/ui/views/match/widgets/word_builder.dart';
 import 'package:spella/ui/views/party/party_match_viewmodel.dart';
 import 'package:spella/ui/views/party/widgets/handoff_overlay.dart';
+import 'package:spella/ui/views/match/widgets/play_status_panel.dart';
 import 'package:spella/ui/views/party/widgets/party_round_recap.dart';
+import 'package:spella/ui/views/party/widgets/turn_result_overlay.dart';
 import 'package:spella/ui/widgets/app_avatar.dart';
 import 'package:spella/ui/widgets/app_buttons.dart';
 import 'package:spella/ui/widgets/count_up_text.dart';
@@ -53,6 +57,7 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
                       roundNumber: viewModel.roundNumber,
                       totalRounds: viewModel.totalRounds,
                       onLeave: viewModel.requestQuit,
+                      onPause: viewModel.canPause ? viewModel.pauseTurn : null,
                     ),
                     _TurnBadge(viewModel: viewModel),
                     Expanded(child: _PlayStatus(viewModel: viewModel)),
@@ -61,32 +66,7 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
                 ),
               ),
             ),
-            // The board is built underneath but covered while the device is in
-            // motion, so the next player never sees the rack early.
-            if (viewModel.phase == PartyPhase.handoff)
-              Positioned.fill(
-                child: HandoffOverlay(
-                  player: viewModel.currentPlayer,
-                  roundNumber: viewModel.roundNumber,
-                  totalRounds: viewModel.totalRounds,
-                  turnNumber: viewModel.turnNumber,
-                  playerCount: viewModel.playerCount,
-                  standings: viewModel.standings,
-                  onReady: viewModel.beginTurn,
-                ),
-              ),
-            if (viewModel.phase == PartyPhase.roundRecap)
-              Positioned.fill(
-                child: MatchScrim(
-                  child: PartyRoundRecap(
-                    roundNumber: viewModel.roundNumber,
-                    lines: viewModel.roundLines,
-                    bestPossibleWord: viewModel.bestPossibleWord,
-                    isFinalRound: viewModel.isFinalRound,
-                    onContinue: viewModel.continueFromRecap,
-                  ),
-                ),
-              ),
+            MatchOverlaySlot(child: _overlayFor(viewModel)),
           ],
         ),
       ),
@@ -99,6 +79,71 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
 
   @override
   void onViewModelReady(PartyMatchViewModel viewModel) => viewModel.initialise();
+
+  /// Whichever overlay the current phase calls for.
+  ///
+  /// A party turn spends most of its life under one of these - the board is
+  /// only uncovered between the count-in and the player committing - so they
+  /// are the mode's main surface rather than an interruption to it.
+  Widget? _overlayFor(PartyMatchViewModel viewModel) {
+    switch (viewModel.phase) {
+      case PartyPhase.handoff:
+        return HandoffOverlay(
+          key: ValueKey<String>('handoff-${viewModel.currentPlayer.id}'
+              '-${viewModel.roundNumber}'),
+          player: viewModel.currentPlayer,
+          nextPlayer: viewModel.nextPlayer,
+          roundNumber: viewModel.roundNumber,
+          totalRounds: viewModel.totalRounds,
+          turnNumber: viewModel.turnNumber,
+          playerCount: viewModel.playerCount,
+          standings: viewModel.standings,
+          onReady: viewModel.beginTurn,
+          onSkip: viewModel.skipTurn,
+        );
+      case PartyPhase.countdown:
+        return CountdownOverlay(
+          key: const ValueKey<String>('countdown'),
+          secondsRemaining: viewModel.countdownRemaining,
+          playerName: viewModel.currentPlayer.name,
+        );
+      case PartyPhase.paused:
+        return PausedOverlay(
+          key: const ValueKey<String>('paused'),
+          secondsRemaining: viewModel.secondsRemaining,
+          onResume: viewModel.resumeTurn,
+          onQuit: viewModel.requestQuit,
+        );
+      case PartyPhase.turnResult:
+        final WordPlay? play = viewModel.lastPlay;
+        final PartyPlayer? player = viewModel.lastPlayer;
+        if (play == null || player == null) return null;
+
+        return TurnResultOverlay(
+          key: ValueKey<String>('turn-${player.id}-${viewModel.roundNumber}'),
+          player: player,
+          play: play,
+          total: viewModel.lastPlayerTotal,
+          nextPlayer: viewModel.nextPlayer,
+          isRoundComplete: viewModel.isRoundComplete,
+          onContinue: viewModel.continueFromTurn,
+        );
+      case PartyPhase.roundRecap:
+        return MatchScrim(
+          key: ValueKey<String>('recap-${viewModel.roundNumber}'),
+          child: PartyRoundRecap(
+            roundNumber: viewModel.roundNumber,
+            lines: viewModel.roundLines,
+            bestPossibleWord: viewModel.bestPossibleWord,
+            isFinalRound: viewModel.isFinalRound,
+            onContinue: viewModel.continueFromRecap,
+          ),
+        );
+      case PartyPhase.playing:
+      case PartyPhase.finishing:
+        return null;
+    }
+  }
 }
 
 /// Whose turn this is, and what they have banked so far.
@@ -175,48 +220,13 @@ class _PlayStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppPalette palette = context.palette;
-    final bool isValid = viewModel.validation.isValid;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Center(
-        child: AnimatedSwitcher(
-          duration: AppMotion.quick,
-          switchInCurve: AppMotion.enter,
-          transitionBuilder: (Widget child, Animation<double> animation) =>
-              FadeTransition(
-                opacity: animation,
-                child: ScaleTransition(
-                  scale: Tween<double>(begin: 0.96, end: 1).animate(animation),
-                  child: child,
-                ),
-              ),
-          child: isValid
-              ? Column(
-                  key: const ValueKey<String>('valid'),
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    PulseOnChange(
-                      value: viewModel.validation.score,
-                      child: Text(
-                        '+${viewModel.validation.score}',
-                        style: AppTextStyles.scoreLarge.copyWith(color: palette.success),
-                      ),
-                    ),
-                    verticalSpace(AppSpacing.sm),
-                    Text(
-                      'POINTS IF YOU PLAY NOW',
-                      style: AppTextStyles.overline.copyWith(color: palette.textMuted),
-                    ),
-                  ],
-                )
-              : Text(
-                  viewModel.validation.message,
-                  key: ValueKey<String>(viewModel.validation.message),
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.body.copyWith(color: palette.textMuted),
-                ),
+        child: PlayStatusPanel(
+          isValid: viewModel.validation.isValid,
+          score: viewModel.validation.score,
+          message: viewModel.validation.message,
         ),
       ),
     );
@@ -238,6 +248,7 @@ class _PlayArea extends StatelessWidget {
           Shake(
             trigger: viewModel.showRejection,
             child: WordBuilder(
+              isRevealed: viewModel.isBoardRevealed,
               slotCount: viewModel.slotCount,
               placedTiles: viewModel.placedTiles,
               bonuses: viewModel.bonuses,
@@ -246,6 +257,7 @@ class _PlayArea extends StatelessWidget {
           ),
           verticalSpace(AppSpacing.xl),
           RackRow(
+            isRevealed: viewModel.isBoardRevealed,
             rack: viewModel.rack,
             placedTiles: viewModel.placedTiles,
             onTileTapped: viewModel.onRackTileTapped,

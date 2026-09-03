@@ -26,10 +26,15 @@ class HandoffOverlay extends StatelessWidget {
     required this.playerCount,
     required this.standings,
     required this.onReady,
+    required this.onSkip,
+    this.nextPlayer,
     super.key,
   });
 
   final PartyPlayer player;
+
+  /// Who is up after this turn, so the table can see itself coming.
+  final PartyPlayer? nextPlayer;
   final int roundNumber;
   final int totalRounds;
 
@@ -43,13 +48,18 @@ class HandoffOverlay extends StatelessWidget {
 
   final VoidCallback onReady;
 
+  /// Hands the turn on for somebody who is not at the table. Their round is
+  /// recorded as a pass rather than silently dropped.
+  final VoidCallback onSkip;
+
   @override
   Widget build(BuildContext context) {
     final AppPalette palette = context.palette;
     final bool hasScores = standings.any((PartyStanding standing) => standing.points > 0);
 
     return MatchScrim(
-      child: Padding(
+      child: OverlayEntrance(
+        child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -74,6 +84,18 @@ class HandoffOverlay extends StatelessWidget {
                 style: AppTextStyles.displayMedium.copyWith(color: palette.textPrimary),
               ),
             ),
+            if (nextPlayer != null) ...<Widget>[
+              verticalSpace(AppSpacing.sm),
+              Text(
+                'then ${nextPlayer!.name}',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.labelSmall.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: palette.textMuted,
+                ),
+              ),
+            ],
             if (hasScores) ...<Widget>[
               verticalSpace(AppSpacing.section),
               _RunningTotals(standings: standings),
@@ -88,13 +110,27 @@ class HandoffOverlay extends StatelessWidget {
             ),
             verticalSpace(AppSpacing.md),
             Text(
-              'The clock starts when you tap',
+              // The count-in is the promise this line is making: tapping does
+              // not drop you onto a running clock.
+              "You'll be counted in from three",
               style: AppTextStyles.labelSmall.copyWith(
                 fontWeight: FontWeight.w500,
                 color: palette.textMuted,
               ),
             ),
+            verticalSpace(AppSpacing.xl),
+            // Deliberately quiet and deliberately present. Somebody always
+            // steps out mid-game, and the alternative to a skip is the table
+            // waiting out a full round clock on an empty chair.
+            AppButton(
+              label: 'Skip ${player.name}',
+              style: AppButtonStyle.ghost,
+              size: AppButtonSize.small,
+              expand: false,
+              onPressed: onSkip,
+            ),
           ],
+        ),
         ),
       ),
     );

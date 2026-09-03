@@ -7,7 +7,9 @@ import 'package:spella/core/models/party.dart';
 import 'package:spella/core/services/dictionary_service.dart';
 import 'package:spella/ui/common/app_theme.dart';
 import 'package:spella/ui/views/party/party_match_view.dart';
+import 'package:spella/ui/views/party/party_match_viewmodel.dart';
 import 'package:spella/ui/views/party/party_setup_view.dart';
+import 'package:spella/ui/widgets/app_buttons.dart';
 import 'package:spella/ui/widgets/letter_tile_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 
@@ -35,6 +37,30 @@ final Finder _rackTiles = find.byWidgetPredicate(
 final Finder _placedTiles = find.byWidgetPredicate(
   (Widget widget) => widget is LetterTileView && widget.variant == TileVariant.placed,
 );
+
+/// Lets an overlay finish fading in or out.
+Future<void> _settle(WidgetTester tester) async {
+  for (int frame = 0; frame < 3; frame++) {
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+}
+
+/// Takes the device from a handoff through the count-in to a live clock.
+Future<void> _startTurn(WidgetTester tester) async {
+  await tester.tap(find.text("I'm ready"));
+  await tester.pump();
+
+  for (int tick = 0; tick < PartyMatchViewModel.countdownSeconds; tick++) {
+    await tester.pump(const Duration(seconds: 1));
+  }
+  await _settle(tester);
+}
+
+/// Dismisses the turn result the player is shown before passing the device on.
+Future<void> _leaveTurnResult(WidgetTester tester) async {
+  await tester.tap(find.byType(AppButton).last);
+  await _settle(tester);
+}
 
 void main() {
   setUpAll(() async {
@@ -96,7 +122,7 @@ void main() {
       expect(find.text("I'm ready"), findsOneWidget);
     });
 
-    testWidgets('tapping ready deals the turn and starts the clock', (
+    testWidgets('tapping ready counts the player in before the clock starts', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(_hostApp(_partyMatch()));
@@ -105,6 +131,17 @@ void main() {
       await tester.tap(find.text("I'm ready"));
       await tester.pump();
 
+      // The rack stays covered through the count-in, so the clock never
+      // starts on the same frame the button was tapped.
+      expect(find.text('GET READY'), findsOneWidget);
+      expect(_rackTiles, findsNothing);
+
+      for (int tick = 0; tick < PartyMatchViewModel.countdownSeconds; tick++) {
+        await tester.pump(const Duration(seconds: 1));
+      }
+      await _settle(tester);
+
+      expect(find.text('GET READY'), findsNothing);
       expect(find.text('Pass to'), findsNothing);
       expect(_rackTiles, findsNWidgets(GameMode.party.rackSize));
       expect(find.text('YOUR TURN'), findsOneWidget);
@@ -115,21 +152,71 @@ void main() {
       expect(_placedTiles, findsOneWidget);
     });
 
-    testWidgets('passing hands the device to the next player', (
+    testWidgets('a finished turn shows its author the result before moving on', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(_hostApp(_partyMatch()));
+      await tester.pump();
+      await _startTurn(tester);
+
+      await tester.tap(find.text('Pass turn'));
+      await _settle(tester);
+
+      // The device does not change hands until the player who just played has
+      // seen what the turn was worth.
+      expect(find.text('No word this round'), findsOneWidget);
+      expect(find.text('Pass to Ben'), findsOneWidget);
+      expect(find.text('Pass to'), findsNothing);
+
+      await _leaveTurnResult(tester);
+
+      // Only now is it a handoff, naming the second player.
+      expect(find.text('Pass to'), findsOneWidget);
+      expect(find.text('Ben'), findsWidgets);
+    });
+
+    testWidgets('a player who is not at the table can be skipped', (
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(_hostApp(_partyMatch()));
       await tester.pump();
 
-      await tester.tap(find.text("I'm ready"));
-      await tester.pump();
+      expect(find.text('Skip Ana'), findsOneWidget);
+      await tester.tap(find.text('Skip Ana'));
+      await _settle(tester);
 
-      await tester.tap(find.text('Pass turn'));
-      await tester.pump();
-
-      // Back to a handoff, now naming the second player.
+      // Their round is recorded as a pass and the device moves straight on,
+      // rather than the table waiting out a full clock on an empty chair.
       expect(find.text('Pass to'), findsOneWidget);
-      expect(find.text('Ben'), findsWidgets);
+      expect(find.text('Skip Ben'), findsOneWidget);
+    });
+
+    testWidgets('a turn can be paused and picked back up', (
+      WidgetTester tester,
+    ) async {
+      await tester.pumpWidget(_hostApp(_partyMatch()));
+      await tester.pump();
+      await _startTurn(tester);
+
+      await tester.tap(find.byIcon(Icons.pause_rounded));
+      await _settle(tester);
+
+      expect(find.text('Paused'), findsOneWidget);
+      expect(_rackTiles, findsNothing);
+
+      await tester.tap(find.text('Resume'));
+      await tester.pump();
+
+      // Resuming counts the player back in rather than dropping them onto a
+      // clock that is already running.
+      expect(find.text('GET READY'), findsOneWidget);
+
+      for (int tick = 0; tick < PartyMatchViewModel.countdownSeconds; tick++) {
+        await tester.pump(const Duration(seconds: 1));
+      }
+      await _settle(tester);
+
+      expect(_rackTiles, findsNWidgets(GameMode.party.rackSize));
     });
 
     testWidgets('once everyone has played, the round is recapped', (
@@ -139,10 +226,10 @@ void main() {
       await tester.pump();
 
       for (int turn = 0; turn < _roster.length; turn++) {
-        await tester.tap(find.text("I'm ready"));
-        await tester.pump();
+        await _startTurn(tester);
         await tester.tap(find.text('Pass turn'));
-        await tester.pump();
+        await _settle(tester);
+        await _leaveTurnResult(tester);
       }
 
       expect(find.text('ROUND 1'), findsOneWidget);
@@ -158,15 +245,15 @@ void main() {
 
       for (int round = 0; round < GameMode.party.totalRounds; round++) {
         for (int turn = 0; turn < _roster.length; turn++) {
-          await tester.tap(find.text("I'm ready"));
-          await tester.pump();
+          await _startTurn(tester);
           await tester.tap(find.text('Pass turn'));
-          await tester.pump();
+          await _settle(tester);
+          await _leaveTurnResult(tester);
         }
 
         if (round < GameMode.party.totalRounds - 1) {
           await tester.tap(find.text('Next Round'));
-          await tester.pump();
+          await _settle(tester);
         }
       }
 

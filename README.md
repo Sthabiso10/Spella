@@ -10,6 +10,7 @@ countdown, and race to build the highest-scoring word they can see.
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-3DDC84)](#running-it)
 [![Tests](https://img.shields.io/badge/Tests-188%20passing-2ea44f)](#testing)
 [![Architecture](https://img.shields.io/badge/Architecture-MVVM%20%2F%20Stacked-6f42c1)](#architecture)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
 
@@ -39,6 +40,8 @@ injection behind swappable interfaces, and 188 passing tests.
 - [Testing](#testing)
 - [Running it](#running-it)
 - [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -263,3 +266,45 @@ outstanding.
 > compiling any app code — and 3.0.1 is the latest release, so there's no fixed
 > version to move to. Nothing in `lib/` imports it, so it's parked rather than
 > holding up the build.
+
+---
+
+## Contributing
+
+Contributions are welcome — this is a small enough codebase that a first PR
+shouldn't need a guided tour.
+
+1. **Fork the repo and branch off `main`.** Use a descriptive branch name
+   (`fix/rack-shuffle-seed`, `feat/daily-challenge-picker`).
+2. **Match the existing shape.** Rules and scoring belong in
+   `lib/core/services/` and must stay pure Dart — no `package:flutter`
+   imports, so they're testable without a widget tree. UI logic belongs in a
+   view model, not the widget tree (see [Architecture](#architecture)).
+3. **Add tests for engine or view model changes.** The project has no CI yet,
+   so `flutter analyze` and `flutter test` passing locally is what stands in
+   for a green build — run both before opening a PR:
+
+   ```bash
+   flutter analyze
+   flutter test
+   ```
+4. **Keep PRs scoped.** One fix or one feature per PR makes it reviewable;
+   unrelated formatting or refactors belong in a separate PR.
+5. **Open the PR against `main`** with a short description of what changed
+   and why. Screenshots or a screen recording are appreciated for UI changes.
+
+Found a bug or have an idea that isn't a code change yet? Open an
+[issue](https://github.com/Sthabiso10/Spella/issues) — reproduction steps for
+bugs, or the problem you're trying to solve for feature ideas, are more useful
+than a proposed implementation.
+
+The [Roadmap](#roadmap) above lists the interfaces already in place for
+backend, multiplayer, social and daily-challenge work — those are the
+highest-value places to contribute, since the seams to build against already
+exist.
+
+---
+
+## License
+
+[MIT](LICENSE) — use it, fork it, learn from it.

@@ -19,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Provenance notice for the bundled dictionary asset
   (`assets/dictionary/NOTICE.md`).
 
+### Changed
+
+- Application ID is now `io.github.sthabiso10.spella` on both Android and iOS,
+  replacing the `flutter create` default `com.example.spella`. `com.example.*`
+  is rejected by Google Play, and an application ID cannot be changed after a
+  store release, so it is fixed now rather than never.
+- Reformatted `lib/` and `test/` with the Dart 3.7+ formatter, and braced two
+  `if` statements the reformat split across lines.
+
 ## [1.0.0] — 2026-09-21
 
 First public release.

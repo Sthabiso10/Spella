@@ -1,0 +1,64 @@
+name: Feature request
+description: Suggest an idea, a mode, or a change to how something works
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The problem you're trying to solve is more useful than a proposed
+        implementation — lead with that and the solution usually follows.
+
+        Check the [Roadmap](https://github.com/Sthabiso10/Spella#roadmap)
+        first; backend, multiplayer, social and the daily challenge are already
+        planned.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What's frustrating, missing or confusing right now?
+      placeholder: |
+        After a match I can't tell which letters I consistently fail to use, so
+        there's nothing to practise.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like to see?
+      description: Your idea for solving it. Rough is fine.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of the game?
+      options:
+        - Gameplay / rules / scoring
+        - A new or changed game mode
+        - Pass & Play
+        - Power-ups
+        - UI, design or accessibility
+        - Progression (coins, gems, XP, shop)
+        - Social (friends, ranks, leaderboards)
+        - Developer experience (build, tests, tooling)
+        - Something else
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Optional.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing
+      options:
+        - label: I'd be willing to work on this myself
+          required: false

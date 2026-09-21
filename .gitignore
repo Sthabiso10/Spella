@@ -49,3 +49,6 @@ app.*.map.json
 /f9.txt
 /filtered.txt
 /words_alpha.txt
+
+# Local Claude Code settings (per-developer, not shared)
+.claude/settings.local.json

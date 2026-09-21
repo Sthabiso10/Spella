@@ -75,7 +75,10 @@ class OverlayEntrance extends StatelessWidget {
       duration: AppMotion.entrance,
       curve: AppMotion.settle,
       builder: (BuildContext context, double value, Widget? animatedChild) =>
-          Transform.scale(scale: from + value * (1 - from), child: animatedChild),
+          Transform.scale(
+            scale: from + value * (1 - from),
+            child: animatedChild,
+          ),
       child: child,
     );
   }
@@ -148,7 +151,9 @@ class OpponentThinkingOverlay extends StatelessWidget {
             verticalSpace(AppSpacing.lg),
             Text(
               opponent.username,
-              style: AppTextStyles.headingSmall.copyWith(color: palette.textPrimary),
+              style: AppTextStyles.headingSmall.copyWith(
+                color: palette.textPrimary,
+              ),
             ),
             verticalSpace(AppSpacing.xs),
             Text(
@@ -200,12 +205,16 @@ class PausedOverlay extends StatelessWidget {
               verticalSpace(AppSpacing.lg),
               Text(
                 title,
-                style: AppTextStyles.displayMedium.copyWith(color: palette.textPrimary),
+                style: AppTextStyles.displayMedium.copyWith(
+                  color: palette.textPrimary,
+                ),
               ),
               verticalSpace(AppSpacing.sm),
               Text(
                 '${formatClock(secondsRemaining)} STILL ON THE CLOCK',
-                style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                style: AppTextStyles.overline.copyWith(
+                  color: palette.textMuted,
+                ),
               ),
               verticalSpace(AppSpacing.section),
               AppButton(
@@ -268,7 +277,10 @@ class CountdownOverlay extends StatelessWidget {
                   opacity: animation,
                   child: ScaleTransition(
                     scale: Tween<double>(begin: 1.4, end: 1).animate(
-                      CurvedAnimation(parent: animation, curve: AppMotion.enter),
+                      CurvedAnimation(
+                        parent: animation,
+                        curve: AppMotion.enter,
+                      ),
                     ),
                     child: child,
                   ),

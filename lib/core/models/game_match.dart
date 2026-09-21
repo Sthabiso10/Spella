@@ -40,14 +40,19 @@ class GameMatch {
       currentRoundIndex < rounds.length ? rounds[currentRoundIndex] : null;
 
   /// Rounds that have both plays recorded.
-  List<GameRound> get completedRounds =>
-      rounds.where((GameRound round) => round.isComplete).toList(growable: false);
+  List<GameRound> get completedRounds => rounds
+      .where((GameRound round) => round.isComplete)
+      .toList(growable: false);
 
-  int get hostScore =>
-      completedRounds.fold(0, (int sum, GameRound round) => sum + round.hostScore);
+  int get hostScore => completedRounds.fold(
+    0,
+    (int sum, GameRound round) => sum + round.hostScore,
+  );
 
-  int get guestScore =>
-      completedRounds.fold(0, (int sum, GameRound round) => sum + round.guestScore);
+  int get guestScore => completedRounds.fold(
+    0,
+    (int sum, GameRound round) => sum + round.guestScore,
+  );
 
   /// Rounds still to be played, including the current one.
   int get roundsRemaining => mode.totalRounds - completedRounds.length;

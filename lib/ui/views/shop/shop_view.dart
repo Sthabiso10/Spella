@@ -25,7 +25,9 @@ class ShopView extends StackedView<ShopViewModel> {
         bottom: false,
         child: PageWidth(
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: <Widget>[
               SliverToBoxAdapter(
                 child: PageHeader(
@@ -66,7 +68,9 @@ class ShopView extends StackedView<ShopViewModel> {
                       child: viewModel.message == null
                           ? const SizedBox(width: double.infinity)
                           : Padding(
-                              padding: const EdgeInsets.only(bottom: AppSpacing.xl),
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.xl,
+                              ),
                               child: _MessageBanner(
                                 message: viewModel.message!,
                                 onDismiss: viewModel.dismissMessage,
@@ -104,7 +108,9 @@ class ShopView extends StackedView<ShopViewModel> {
                     verticalSpace(AppSpacing.sm),
                     Text(
                       'Spend coins on these mid-match, from the power-up bar.',
-                      style: AppTextStyles.bodySmall.copyWith(color: palette.textMuted),
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                     verticalSpace(AppSpacing.lg),
                     for (final PowerUp booster in viewModel.boosters)
@@ -161,14 +167,19 @@ class _AvatarTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: isEquipped ? palette.surfaceElevated : palette.surface,
           borderRadius: AppRadius.card,
-          border: Border.all(color: isEquipped ? palette.accent : palette.border),
+          border: Border.all(
+            color: isEquipped ? palette.accent : palette.border,
+          ),
         ),
         child: Opacity(
           opacity: isLocked ? 0.45 : 1,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(offer.emoji, style: const TextStyle(fontSize: 24, height: 1)),
+              Text(
+                offer.emoji,
+                style: const TextStyle(fontSize: 24, height: 1),
+              ),
               verticalSpace(AppSpacing.sm),
               Text(
                 offer.name,
@@ -200,7 +211,11 @@ class _AvatarTile extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.diamond_outlined, size: 10, color: palette.textMuted),
+                    Icon(
+                      Icons.diamond_outlined,
+                      size: 10,
+                      color: palette.textMuted,
+                    ),
                     horizontalSpace(3),
                     Text(
                       '${offer.gemCost}',
@@ -261,7 +276,9 @@ class _BoosterRow extends StatelessWidget {
               children: <Widget>[
                 Text(
                   booster.label,
-                  style: AppTextStyles.label.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.label.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
                 verticalSpace(2),
                 Text(
@@ -280,7 +297,10 @@ class _BoosterRow extends StatelessWidget {
           horizontalSpace(AppSpacing.md),
           Text(
             formatPoints(booster.cost),
-            style: AppTextStyles.scoreSmall.copyWith(fontSize: 15, color: palette.accent),
+            style: AppTextStyles.scoreSmall.copyWith(
+              fontSize: 15,
+              color: palette.accent,
+            ),
           ),
         ],
       ),
@@ -311,12 +331,18 @@ class _MessageBanner extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
-          Icon(Icons.check_circle_outline_rounded, size: 16, color: palette.success),
+          Icon(
+            Icons.check_circle_outline_rounded,
+            size: 16,
+            color: palette.success,
+          ),
           horizontalSpace(AppSpacing.sm),
           Expanded(
             child: Text(
               message,
-              style: AppTextStyles.bodySmall.copyWith(color: palette.textSecondary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: palette.textSecondary,
+              ),
             ),
           ),
           GestureDetector(
@@ -324,7 +350,11 @@ class _MessageBanner extends StatelessWidget {
             behavior: HitTestBehavior.opaque,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.xs),
-              child: Icon(Icons.close_rounded, size: 14, color: palette.textMuted),
+              child: Icon(
+                Icons.close_rounded,
+                size: 14,
+                color: palette.textMuted,
+              ),
             ),
           ),
         ],

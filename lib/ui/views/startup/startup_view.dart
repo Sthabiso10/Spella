@@ -18,7 +18,11 @@ class StartupView extends StackedView<StartupViewModel> {
   static const String _wordmark = 'SPELLA';
 
   @override
-  Widget builder(BuildContext context, StartupViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    StartupViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return Scaffold(
@@ -67,12 +71,17 @@ class StartupView extends StackedView<StartupViewModel> {
   StartupViewModel viewModelBuilder(BuildContext context) => StartupViewModel();
 
   @override
-  void onViewModelReady(StartupViewModel viewModel) => viewModel.runStartupLogic();
+  void onViewModelReady(StartupViewModel viewModel) =>
+      viewModel.runStartupLogic();
 }
 
 /// One letter of the wordmark, rising into place after a staggered delay.
 class _WordmarkLetter extends StatelessWidget {
-  const _WordmarkLetter({required this.letter, required this.order, this.color});
+  const _WordmarkLetter({
+    required this.letter,
+    required this.order,
+    this.color,
+  });
 
   final String letter;
   final int order;
@@ -90,7 +99,10 @@ class _WordmarkLetter extends StatelessWidget {
       curve: Interval((order * 0.07).clamp(0, 0.6), 1, curve: AppMotion.enter),
       builder: (BuildContext context, double value, Widget? child) => Opacity(
         opacity: value.clamp(0, 1),
-        child: Transform.translate(offset: Offset(0, (1 - value) * 12), child: child),
+        child: Transform.translate(
+          offset: Offset(0, (1 - value) * 12),
+          child: child,
+        ),
       ),
       child: Text(
         letter,

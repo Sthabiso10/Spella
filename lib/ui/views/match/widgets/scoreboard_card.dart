@@ -109,7 +109,11 @@ class _PlayerScore extends StatelessWidget {
     final AppPalette palette = context.palette;
     final bool isStart = alignment == CrossAxisAlignment.start;
 
-    final Widget avatar = AppAvatar(player: player, size: 24, ring: AvatarRing.none);
+    final Widget avatar = AppAvatar(
+      player: player,
+      size: 24,
+      ring: AvatarRing.none,
+    );
     final Widget label = Flexible(
       child: Text(
         name,
@@ -125,7 +129,9 @@ class _PlayerScore extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Row(
-          mainAxisAlignment: isStart ? MainAxisAlignment.start : MainAxisAlignment.end,
+          mainAxisAlignment: isStart
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.end,
           children: isStart
               ? <Widget>[avatar, horizontalSpace(AppSpacing.sm), label]
               : <Widget>[label, horizontalSpace(AppSpacing.sm), avatar],

@@ -55,82 +55,94 @@ class HandoffOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppPalette palette = context.palette;
-    final bool hasScores = standings.any((PartyStanding standing) => standing.points > 0);
+    final bool hasScores = standings.any(
+      (PartyStanding standing) => standing.points > 0,
+    );
 
     return MatchScrim(
       child: OverlayEntrance(
         child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              'ROUND $roundNumber OF $totalRounds · TURN $turnNumber OF $playerCount',
-              textAlign: TextAlign.center,
-              style: AppTextStyles.overline.copyWith(color: palette.textMuted),
-            ),
-            verticalSpace(AppSpacing.section),
-            AppAvatar(player: player.asPlayer, size: 72, ring: AvatarRing.accent),
-            verticalSpace(AppSpacing.xl),
-            Text(
-              'Pass to',
-              style: AppTextStyles.body.copyWith(color: palette.textSecondary),
-            ),
-            verticalSpace(AppSpacing.xs),
-            FittedBox(
-              child: Text(
-                player.name,
-                maxLines: 1,
-                style: AppTextStyles.displayMedium.copyWith(color: palette.textPrimary),
-              ),
-            ),
-            if (nextPlayer != null) ...<Widget>[
-              verticalSpace(AppSpacing.sm),
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               Text(
-                'then ${nextPlayer!.name}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+                'ROUND $roundNumber OF $totalRounds · TURN $turnNumber OF $playerCount',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.overline.copyWith(
+                  color: palette.textMuted,
+                ),
+              ),
+              verticalSpace(AppSpacing.section),
+              AppAvatar(
+                player: player.asPlayer,
+                size: 72,
+                ring: AvatarRing.accent,
+              ),
+              verticalSpace(AppSpacing.xl),
+              Text(
+                'Pass to',
+                style: AppTextStyles.body.copyWith(
+                  color: palette.textSecondary,
+                ),
+              ),
+              verticalSpace(AppSpacing.xs),
+              FittedBox(
+                child: Text(
+                  player.name,
+                  maxLines: 1,
+                  style: AppTextStyles.displayMedium.copyWith(
+                    color: palette.textPrimary,
+                  ),
+                ),
+              ),
+              if (nextPlayer != null) ...<Widget>[
+                verticalSpace(AppSpacing.sm),
+                Text(
+                  'then ${nextPlayer!.name}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.labelSmall.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: palette.textMuted,
+                  ),
+                ),
+              ],
+              if (hasScores) ...<Widget>[
+                verticalSpace(AppSpacing.section),
+                _RunningTotals(standings: standings),
+              ],
+              verticalSpace(AppSpacing.section),
+              AppButton(
+                label: "I'm ready",
+                size: AppButtonSize.large,
+                expand: false,
+                trailingIcon: Icons.arrow_forward_rounded,
+                onPressed: onReady,
+              ),
+              verticalSpace(AppSpacing.md),
+              Text(
+                // The count-in is the promise this line is making: tapping does
+                // not drop you onto a running clock.
+                "You'll be counted in from three",
                 style: AppTextStyles.labelSmall.copyWith(
                   fontWeight: FontWeight.w500,
                   color: palette.textMuted,
                 ),
               ),
-            ],
-            if (hasScores) ...<Widget>[
-              verticalSpace(AppSpacing.section),
-              _RunningTotals(standings: standings),
-            ],
-            verticalSpace(AppSpacing.section),
-            AppButton(
-              label: "I'm ready",
-              size: AppButtonSize.large,
-              expand: false,
-              trailingIcon: Icons.arrow_forward_rounded,
-              onPressed: onReady,
-            ),
-            verticalSpace(AppSpacing.md),
-            Text(
-              // The count-in is the promise this line is making: tapping does
-              // not drop you onto a running clock.
-              "You'll be counted in from three",
-              style: AppTextStyles.labelSmall.copyWith(
-                fontWeight: FontWeight.w500,
-                color: palette.textMuted,
+              verticalSpace(AppSpacing.xl),
+              // Deliberately quiet and deliberately present. Somebody always
+              // steps out mid-game, and the alternative to a skip is the table
+              // waiting out a full round clock on an empty chair.
+              AppButton(
+                label: 'Skip ${player.name}',
+                style: AppButtonStyle.ghost,
+                size: AppButtonSize.small,
+                expand: false,
+                onPressed: onSkip,
               ),
-            ),
-            verticalSpace(AppSpacing.xl),
-            // Deliberately quiet and deliberately present. Somebody always
-            // steps out mid-game, and the alternative to a skip is the table
-            // waiting out a full round clock on an empty chair.
-            AppButton(
-              label: 'Skip ${player.name}',
-              style: AppButtonStyle.ghost,
-              size: AppButtonSize.small,
-              expand: false,
-              onPressed: onSkip,
-            ),
-          ],
-        ),
+            ],
+          ),
         ),
       ),
     );
@@ -162,7 +174,9 @@ class _RunningTotals extends StatelessWidget {
               Text(
                 '${standing.points}',
                 style: AppTextStyles.scoreSmall.copyWith(
-                  color: standing.isWinner ? palette.accent : palette.textSecondary,
+                  color: standing.isWinner
+                      ? palette.accent
+                      : palette.textSecondary,
                 ),
               ),
               verticalSpace(2),
@@ -173,7 +187,9 @@ class _RunningTotals extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
               ),
             ],

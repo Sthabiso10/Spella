@@ -52,7 +52,9 @@ class FriendRow extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: AppTextStyles.bodyStrong.copyWith(
                     fontSize: 14,
-                    color: isOnline ? palette.textPrimary : palette.textSecondary,
+                    color: isOnline
+                        ? palette.textPrimary
+                        : palette.textSecondary,
                   ),
                 ),
                 verticalSpace(2),

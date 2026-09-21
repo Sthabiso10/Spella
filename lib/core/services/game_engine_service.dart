@@ -104,12 +104,18 @@ class GameEngineService {
     final String word = board.word;
 
     if (word.isEmpty) {
-      return const PlayValidation.invalid(word: '', reason: PlayRejection.empty);
+      return const PlayValidation.invalid(
+        word: '',
+        reason: PlayRejection.empty,
+      );
     }
     if (word.length < minimumWordLength) {
       return PlayValidation.invalid(word: word, reason: PlayRejection.tooShort);
     }
-    if (!_dictionary.canPlay(word, board.rack.map((LetterTile tile) => tile.letter))) {
+    if (!_dictionary.canPlay(
+      word,
+      board.rack.map((LetterTile tile) => tile.letter),
+    )) {
       return PlayValidation.invalid(
         word: word,
         reason: _dictionary.isValidWord(word)
@@ -232,7 +238,11 @@ class GameEngineService {
     minLength: minimumWordLength,
   );
 
-  GameMatch _recordPlay(GameMatch match, {WordPlay? hostPlay, WordPlay? guestPlay}) {
+  GameMatch _recordPlay(
+    GameMatch match, {
+    WordPlay? hostPlay,
+    WordPlay? guestPlay,
+  }) {
     final GameRound? round = match.currentRound;
     if (round == null) return match;
 

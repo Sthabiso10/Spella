@@ -14,7 +14,9 @@ void main() {
 
   tearDown(() => clock.dispose());
 
-  testWidgets('a reset clock is loaded but not running', (WidgetTester tester) async {
+  testWidgets('a reset clock is loaded but not running', (
+    WidgetTester tester,
+  ) async {
     clock.reset(45);
 
     expect(clock.remaining, 45);
@@ -126,7 +128,9 @@ void main() {
     expect(expiries, 1, reason: 'a finished clock keeps quiet');
   });
 
-  testWidgets('starting an empty clock does not fire', (WidgetTester tester) async {
+  testWidgets('starting an empty clock does not fire', (
+    WidgetTester tester,
+  ) async {
     clock
       ..reset(0)
       ..start();

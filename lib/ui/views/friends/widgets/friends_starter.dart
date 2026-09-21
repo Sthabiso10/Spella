@@ -16,7 +16,11 @@ import 'package:spella/ui/widgets/app_buttons.dart';
 /// of this screen right now. Pass & Play leads because it is the one that
 /// actually involves other people.
 class FriendsStarter extends StatelessWidget {
-  const FriendsStarter({required this.onPassAndPlay, required this.onPlayBot, super.key});
+  const FriendsStarter({
+    required this.onPassAndPlay,
+    required this.onPlayBot,
+    super.key,
+  });
 
   final VoidCallback onPassAndPlay;
   final VoidCallback onPlayBot;
@@ -47,7 +51,9 @@ class FriendsStarter extends StatelessWidget {
           verticalSpace(AppSpacing.lg),
           Text(
             'No friends yet',
-            style: AppTextStyles.headingMedium.copyWith(color: palette.textPrimary),
+            style: AppTextStyles.headingMedium.copyWith(
+              color: palette.textPrimary,
+            ),
           ),
           verticalSpace(AppSpacing.sm),
           Text(

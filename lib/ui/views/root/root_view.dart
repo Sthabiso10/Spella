@@ -19,28 +19,29 @@ class RootView extends StackedView<RootViewModel> {
     ShopView(),
   ];
 
-  static const Map<AppTab, NavDestination> _destinations = <AppTab, NavDestination>{
-    AppTab.home: NavDestination(
-      icon: Icons.grid_view_outlined,
-      activeIcon: Icons.grid_view_rounded,
-      label: 'Home',
-    ),
-    AppTab.friends: NavDestination(
-      icon: Icons.people_outline_rounded,
-      activeIcon: Icons.people_rounded,
-      label: 'Friends',
-    ),
-    AppTab.ranks: NavDestination(
-      icon: Icons.leaderboard_outlined,
-      activeIcon: Icons.leaderboard_rounded,
-      label: 'Ranks',
-    ),
-    AppTab.shop: NavDestination(
-      icon: Icons.storefront_outlined,
-      activeIcon: Icons.storefront_rounded,
-      label: 'Shop',
-    ),
-  };
+  static const Map<AppTab, NavDestination> _destinations =
+      <AppTab, NavDestination>{
+        AppTab.home: NavDestination(
+          icon: Icons.grid_view_outlined,
+          activeIcon: Icons.grid_view_rounded,
+          label: 'Home',
+        ),
+        AppTab.friends: NavDestination(
+          icon: Icons.people_outline_rounded,
+          activeIcon: Icons.people_rounded,
+          label: 'Friends',
+        ),
+        AppTab.ranks: NavDestination(
+          icon: Icons.leaderboard_outlined,
+          activeIcon: Icons.leaderboard_rounded,
+          label: 'Ranks',
+        ),
+        AppTab.shop: NavDestination(
+          icon: Icons.storefront_outlined,
+          activeIcon: Icons.storefront_rounded,
+          label: 'Shop',
+        ),
+      };
 
   @override
   Widget builder(BuildContext context, RootViewModel viewModel, Widget? child) {

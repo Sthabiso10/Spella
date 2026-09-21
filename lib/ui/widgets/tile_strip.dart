@@ -187,7 +187,8 @@ class _TileEntranceState extends State<TileEntrance>
     curve: Interval(_start, 1, curve: Curves.easeOut),
   );
 
-  late final Animation<double> _scale = Tween<double>(begin: 0.82, end: 1).animate(
+  late final Animation<double>
+  _scale = Tween<double>(begin: 0.82, end: 1).animate(
     CurvedAnimation(
       parent: _controller,
       // Overshoots very slightly, which is what makes a tile read as landing

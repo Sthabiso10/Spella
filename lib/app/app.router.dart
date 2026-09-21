@@ -76,7 +76,9 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
       settings,
     ),
     Routes.partyResults => _riseUp(
-      PartyResultsView(arguments: settings.arguments! as PartyResultsViewArguments),
+      PartyResultsView(
+        arguments: settings.arguments! as PartyResultsViewArguments,
+      ),
       settings,
     ),
     _ => _fade(const _UnknownRouteView(), settings),

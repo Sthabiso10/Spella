@@ -25,17 +25,20 @@ Widget _hostApp(Widget child) => MaterialApp(
   home: child,
 );
 
-Widget _partyMatch() =>
-    PartyMatchView(arguments: const router.PartyMatchViewArguments(players: _roster));
+Widget _partyMatch() => PartyMatchView(
+  arguments: const router.PartyMatchViewArguments(players: _roster),
+);
 
 /// Tiles the current player can still use.
 final Finder _rackTiles = find.byWidgetPredicate(
-  (Widget widget) => widget is LetterTileView && widget.variant == TileVariant.rack,
+  (Widget widget) =>
+      widget is LetterTileView && widget.variant == TileVariant.rack,
 );
 
 /// Tiles placed into the word being built.
 final Finder _placedTiles = find.byWidgetPredicate(
-  (Widget widget) => widget is LetterTileView && widget.variant == TileVariant.placed,
+  (Widget widget) =>
+      widget is LetterTileView && widget.variant == TileVariant.placed,
 );
 
 /// Lets an overlay finish fading in or out.
@@ -152,28 +155,29 @@ void main() {
       expect(_placedTiles, findsOneWidget);
     });
 
-    testWidgets('a finished turn shows its author the result before moving on', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(_hostApp(_partyMatch()));
-      await tester.pump();
-      await _startTurn(tester);
+    testWidgets(
+      'a finished turn shows its author the result before moving on',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(_hostApp(_partyMatch()));
+        await tester.pump();
+        await _startTurn(tester);
 
-      await tester.tap(find.text('Pass turn'));
-      await _settle(tester);
+        await tester.tap(find.text('Pass turn'));
+        await _settle(tester);
 
-      // The device does not change hands until the player who just played has
-      // seen what the turn was worth.
-      expect(find.text('No word this round'), findsOneWidget);
-      expect(find.text('Pass to Ben'), findsOneWidget);
-      expect(find.text('Pass to'), findsNothing);
+        // The device does not change hands until the player who just played has
+        // seen what the turn was worth.
+        expect(find.text('No word this round'), findsOneWidget);
+        expect(find.text('Pass to Ben'), findsOneWidget);
+        expect(find.text('Pass to'), findsNothing);
 
-      await _leaveTurnResult(tester);
+        await _leaveTurnResult(tester);
 
-      // Only now is it a handoff, naming the second player.
-      expect(find.text('Pass to'), findsOneWidget);
-      expect(find.text('Ben'), findsWidgets);
-    });
+        // Only now is it a handoff, naming the second player.
+        expect(find.text('Pass to'), findsOneWidget);
+        expect(find.text('Ben'), findsWidgets);
+      },
+    );
 
     testWidgets('a player who is not at the table can be skipped', (
       WidgetTester tester,
@@ -237,27 +241,28 @@ void main() {
       expect(find.text('Next Round'), findsOneWidget);
     });
 
-    testWidgets('the last round offers the standings instead of another round', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(_hostApp(_partyMatch()));
-      await tester.pump();
+    testWidgets(
+      'the last round offers the standings instead of another round',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(_hostApp(_partyMatch()));
+        await tester.pump();
 
-      for (int round = 0; round < GameMode.party.totalRounds; round++) {
-        for (int turn = 0; turn < _roster.length; turn++) {
-          await _startTurn(tester);
-          await tester.tap(find.text('Pass turn'));
-          await _settle(tester);
-          await _leaveTurnResult(tester);
+        for (int round = 0; round < GameMode.party.totalRounds; round++) {
+          for (int turn = 0; turn < _roster.length; turn++) {
+            await _startTurn(tester);
+            await tester.tap(find.text('Pass turn'));
+            await _settle(tester);
+            await _leaveTurnResult(tester);
+          }
+
+          if (round < GameMode.party.totalRounds - 1) {
+            await tester.tap(find.text('Next Round'));
+            await _settle(tester);
+          }
         }
 
-        if (round < GameMode.party.totalRounds - 1) {
-          await tester.tap(find.text('Next Round'));
-          await _settle(tester);
-        }
-      }
-
-      expect(find.text('See Standings'), findsOneWidget);
-    });
+        expect(find.text('See Standings'), findsOneWidget);
+      },
+    );
   });
 }

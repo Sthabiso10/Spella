@@ -62,7 +62,11 @@ class ActivityTile extends StatelessWidget {
                 verticalSpace(3),
                 Row(
                   children: <Widget>[
-                    Icon(_iconFor(activity.kind), size: 12, color: palette.textMuted),
+                    Icon(
+                      _iconFor(activity.kind),
+                      size: 12,
+                      color: palette.textMuted,
+                    ),
                     horizontalSpace(AppSpacing.xs + 1),
                     Flexible(
                       child: Text(

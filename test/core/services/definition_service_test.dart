@@ -42,7 +42,8 @@ const String _unknownResponse = '''
 /// Responds with [body] as raw UTF-8 bytes and *no* charset header, proving
 /// the service decodes correctly without being told how.
 MockClient _respondWith(String body, {int status = 200}) => MockClient(
-  (http.Request request) async => http.Response.bytes(utf8.encode(body), status),
+  (http.Request request) async =>
+      http.Response.bytes(utf8.encode(body), status),
 );
 
 void main() {

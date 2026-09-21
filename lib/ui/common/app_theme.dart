@@ -22,7 +22,9 @@ class AppTheme {
   /// The bars are transparent so content can run underneath them; only the icon
   /// brightness has to flip with the scheme.
   static SystemUiOverlayStyle systemOverlay(AppPalette palette) {
-    final Brightness icons = palette.isDark ? Brightness.light : Brightness.dark;
+    final Brightness icons = palette.isDark
+        ? Brightness.light
+        : Brightness.dark;
 
     return SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -51,8 +53,11 @@ class AppTheme {
       splashFactory: NoSplash.splashFactory,
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      colorScheme: ColorScheme.fromSeed(seedColor: palette.accent, brightness: brightness)
-          .copyWith(
+      colorScheme:
+          ColorScheme.fromSeed(
+            seedColor: palette.accent,
+            brightness: brightness,
+          ).copyWith(
             primary: palette.textPrimary,
             onPrimary: palette.textInverse,
             primaryContainer: palette.surfaceElevated,
@@ -86,7 +91,11 @@ class AppTheme {
         titleTextStyle: textTheme.titleMedium,
         systemOverlayStyle: systemOverlay(palette),
       ),
-      dividerTheme: DividerThemeData(color: palette.divider, thickness: 1, space: 1),
+      dividerTheme: DividerThemeData(
+        color: palette.divider,
+        thickness: 1,
+        space: 1,
+      ),
       iconTheme: IconThemeData(color: palette.textSecondary, size: 20),
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: palette.accent,
@@ -137,7 +146,9 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: palette.surfaceElevated,
-        contentTextStyle: textTheme.bodyMedium?.copyWith(color: palette.textPrimary),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: palette.textPrimary,
+        ),
         actionTextColor: palette.accent,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -161,7 +172,9 @@ class AppTheme {
           side: BorderSide(color: palette.border),
         ),
         titleTextStyle: textTheme.titleLarge,
-        contentTextStyle: textTheme.bodyMedium?.copyWith(color: palette.textSecondary),
+        contentTextStyle: textTheme.bodyMedium?.copyWith(
+          color: palette.textSecondary,
+        ),
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(

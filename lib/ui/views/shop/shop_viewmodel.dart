@@ -6,7 +6,11 @@ import 'package:stacked/stacked.dart';
 
 /// An avatar for sale.
 class AvatarOffer {
-  const AvatarOffer({required this.emoji, required this.name, required this.gemCost});
+  const AvatarOffer({
+    required this.emoji,
+    required this.name,
+    required this.gemCost,
+  });
 
   final String emoji;
   final String name;
@@ -21,9 +25,8 @@ class ShopViewModel extends ReactiveViewModel {
   String? _message;
 
   @override
-  List<ListenableServiceMixin> get listenableServices => <ListenableServiceMixin>[
-    _playerService,
-  ];
+  List<ListenableServiceMixin> get listenableServices =>
+      <ListenableServiceMixin>[_playerService];
 
   Player get player => _playerService.currentPlayer;
 

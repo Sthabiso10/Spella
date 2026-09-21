@@ -24,7 +24,8 @@ class RackDraw {
 /// drawn from an English frequency table. That rules out the dead rack of
 /// seven consonants that makes word games feel unfair.
 class RackGeneratorService {
-  RackGeneratorService(this._dictionary, {Random? random}) : _random = random ?? Random();
+  RackGeneratorService(this._dictionary, {Random? random})
+    : _random = random ?? Random();
 
   final DictionaryService _dictionary;
   final Random _random;
@@ -39,7 +40,8 @@ class RackGeneratorService {
     final List<String> letters = _drawLetters(mode.rackSize);
     return RackDraw(
       tiles: <LetterTile>[
-        for (int i = 0; i < letters.length; i++) LetterTile.of(letters[i], index: i),
+        for (int i = 0; i < letters.length; i++)
+          LetterTile.of(letters[i], index: i),
       ],
       bonuses: _layOutBonuses(mode),
     );
@@ -50,7 +52,10 @@ class RackGeneratorService {
   List<LetterTile> redraw(List<LetterTile> keep, {required int count}) {
     final List<LetterTile> replacements = <LetterTile>[
       for (int i = 0; i < count; i++)
-        LetterTile.of(_randomLetter(), index: keep.length + i + _random.nextInt(1000)),
+        LetterTile.of(
+          _randomLetter(),
+          index: keep.length + i + _random.nextInt(1000),
+        ),
     ];
     return <LetterTile>[...keep, ...replacements]..shuffle(_random);
   }
@@ -101,17 +106,22 @@ class RackGeneratorService {
   void _ensureVowels(List<String> letters) {
     final int required = _minVowelsFor(letters.length);
 
-    int vowelCount() => letters.where((String letter) => _vowels.contains(letter)).length;
+    int vowelCount() =>
+        letters.where((String letter) => _vowels.contains(letter)).length;
 
     while (vowelCount() < required) {
-      final int index = letters.indexWhere((String letter) => !_vowels.contains(letter));
+      final int index = letters.indexWhere(
+        (String letter) => !_vowels.contains(letter),
+      );
       if (index == -1) return;
       letters[index] = _vowels[_random.nextInt(_vowels.length)];
     }
   }
 
   String _randomLetter() =>
-      LetterData.weightedAlphabet[_random.nextInt(LetterData.weightedAlphabet.length)];
+      LetterData.weightedAlphabet[_random.nextInt(
+        LetterData.weightedAlphabet.length,
+      )];
 
   /// Places bonuses on the board, biased towards the earlier slots that short
   /// words can actually reach, and capped at one word multiplier per round.

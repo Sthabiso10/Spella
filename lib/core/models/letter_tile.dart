@@ -5,7 +5,11 @@ import 'package:spella/core/data/letter_data.dart';
 /// Tiles carry an [id] because a rack can legitimately hold duplicates of the
 /// same letter and the board needs to tell them apart.
 class LetterTile {
-  const LetterTile({required this.id, required this.letter, required this.value});
+  const LetterTile({
+    required this.id,
+    required this.letter,
+    required this.value,
+  });
 
   /// Builds a tile, deriving its point [value] from [LetterData].
   factory LetterTile.of(String letter, {required int index}) {

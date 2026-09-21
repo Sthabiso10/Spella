@@ -57,7 +57,9 @@ class AppCard extends StatelessWidget {
         borderRadius: borderRadius,
         border:
             border ??
-            Border.all(color: isAccented ? palette.accentBorder : palette.border),
+            Border.all(
+              color: isAccented ? palette.accentBorder : palette.border,
+            ),
         boxShadow: floats ? palette.liftShadow : null,
       ),
       child: Padding(padding: padding, child: child),

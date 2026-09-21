@@ -9,7 +9,11 @@ import 'package:spella/ui/widgets/section_header.dart';
 /// Shares [LeaderboardRow] with the Ranks tab rather than defining its own
 /// compact layout, so a player's position looks the same wherever they meet it.
 class LeaderboardPreview extends StatelessWidget {
-  const LeaderboardPreview({required this.entries, required this.onSeeAll, super.key});
+  const LeaderboardPreview({
+    required this.entries,
+    required this.onSeeAll,
+    super.key,
+  });
 
   final List<LeaderboardEntry> entries;
   final VoidCallback onSeeAll;

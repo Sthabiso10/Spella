@@ -171,7 +171,8 @@ class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
       _phase == PartyPhase.turnResult ||
       _phase == PartyPhase.roundRecap;
 
-  String get bestPossibleWord => _match.currentRound.deal.bestPossibleWord.toUpperCase();
+  String get bestPossibleWord =>
+      _match.currentRound.deal.bestPossibleWord.toUpperCase();
 
   bool get isFinalRound => _match.isFinalRound;
 
@@ -224,7 +225,9 @@ class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
       id: const Uuid().v4(),
       mode: mode,
       players: roster,
-      rounds: <PartyRound>[PartyRound(deal: _engine.dealRound(mode: mode, index: 0))],
+      rounds: <PartyRound>[
+        PartyRound(deal: _engine.dealRound(mode: mode, index: 0)),
+      ],
     );
     _prepareTurn();
   }
@@ -357,7 +360,9 @@ class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
     _match = _match.copyWith(
       rounds: <PartyRound>[
         ..._match.rounds,
-        PartyRound(deal: _engine.dealRound(mode: mode, index: nextIndex)),
+        PartyRound(
+          deal: _engine.dealRound(mode: mode, index: nextIndex),
+        ),
       ],
       currentRoundIndex: nextIndex,
       turnIndex: 0,
@@ -370,12 +375,13 @@ class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
     if (_phase == PartyPhase.finishing) return;
 
     _suspend();
-    final DialogResponse<dynamic>? response = await _dialog.showConfirmationDialog(
-      title: 'End the game?',
-      description: 'Everyone loses their scores.',
-      confirmationTitle: 'End game',
-      cancelTitle: 'Keep playing',
-    );
+    final DialogResponse<dynamic>? response = await _dialog
+        .showConfirmationDialog(
+          title: 'End the game?',
+          description: 'Everyone loses their scores.',
+          confirmationTitle: 'End game',
+          cancelTitle: 'Keep playing',
+        );
     if (disposed) return;
 
     if (response?.confirmed ?? false) {
@@ -450,7 +456,10 @@ class PartyMatchViewModel extends BaseViewModel with WidgetsBindingObserver {
   /// Records [play] against the current player without moving the device on.
   void _bankPlay(WordPlay play) {
     final List<PartyRound> rounds = List<PartyRound>.of(_match.rounds);
-    rounds[_match.currentRoundIndex] = _match.currentRound.withPlay(play.playerId, play);
+    rounds[_match.currentRoundIndex] = _match.currentRound.withPlay(
+      play.playerId,
+      play,
+    );
 
     _lastPlay = play;
     _lastPlayer = currentPlayer;

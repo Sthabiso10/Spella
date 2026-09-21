@@ -87,16 +87,19 @@ void main() {
       expect(layout.offsetFor(0), Offset.zero);
     });
 
-    test('an unbounded width still resolves rather than producing infinities', () {
-      final TileStripLayout layout = TileStripLayout.resolve(
-        availableWidth: double.infinity,
-        count: 7,
-      );
+    test(
+      'an unbounded width still resolves rather than producing infinities',
+      () {
+        final TileStripLayout layout = TileStripLayout.resolve(
+          availableWidth: double.infinity,
+          count: 7,
+        );
 
-      expect(layout.tileSize.isFinite, isTrue);
-      expect(layout.height.isFinite, isTrue);
-      expect(layout.offsetFor(3).dx.isFinite, isTrue);
-    });
+        expect(layout.tileSize.isFinite, isTrue);
+        expect(layout.height.isFinite, isTrue);
+        expect(layout.offsetFor(3).dx.isFinite, isTrue);
+      },
+    );
 
     test('out of range indexes clamp instead of throwing', () {
       final TileStripLayout layout = TileStripLayout.resolve(

@@ -51,10 +51,15 @@ class PlayHero extends StatelessWidget {
       children: <Widget>[
         Text(
           title,
-          style: AppTextStyles.headingLarge.copyWith(color: palette.textPrimary),
+          style: AppTextStyles.headingLarge.copyWith(
+            color: palette.textPrimary,
+          ),
         ),
         verticalSpace(AppSpacing.sm),
-        Text(subtitle, style: AppTextStyles.body.copyWith(color: palette.textSecondary)),
+        Text(
+          subtitle,
+          style: AppTextStyles.body.copyWith(color: palette.textSecondary),
+        ),
         if (waitingFriends.isNotEmpty) ...<Widget>[
           verticalSpace(AppSpacing.lg),
           SizedBox(
@@ -135,7 +140,9 @@ class _WaitingFriend extends StatelessWidget {
         decoration: BoxDecoration(
           color: palette.surface,
           borderRadius: AppRadius.pill,
-          border: Border.all(color: isYourTurn ? palette.accentBorder : palette.border),
+          border: Border.all(
+            color: isYourTurn ? palette.accentBorder : palette.border,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -155,7 +162,9 @@ class _WaitingFriend extends StatelessWidget {
                   friend.username,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.labelSmall.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
                 Text(
                   isYourTurn ? 'Your turn' : 'Waiting',

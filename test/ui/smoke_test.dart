@@ -86,7 +86,9 @@ void main() {
     });
   });
 
-  testWidgets('the app boots from startup into the shell', (WidgetTester tester) async {
+  testWidgets('the app boots from startup into the shell', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const SpellaApp());
     await tester.pump();
     expect(find.byType(StartupView), findsOneWidget);
@@ -136,7 +138,10 @@ void main() {
       await _settle(tester);
 
       expect(_rackTiles, findsNWidgets(GameMode.marathon.rackSize));
-      expect(find.byType(WordSlotView), findsNWidgets(GameMode.marathon.rackSize));
+      expect(
+        find.byType(WordSlotView),
+        findsNWidgets(GameMode.marathon.rackSize),
+      );
     });
   });
 }
@@ -154,10 +159,12 @@ Future<void> _settle(WidgetTester tester) async {
 
 /// Tiles still available in the rack.
 final Finder _rackTiles = find.byWidgetPredicate(
-  (Widget widget) => widget is LetterTileView && widget.variant == TileVariant.rack,
+  (Widget widget) =>
+      widget is LetterTileView && widget.variant == TileVariant.rack,
 );
 
 /// Tiles placed into the word being built.
 final Finder _placedTiles = find.byWidgetPredicate(
-  (Widget widget) => widget is LetterTileView && widget.variant == TileVariant.placed,
+  (Widget widget) =>
+      widget is LetterTileView && widget.variant == TileVariant.placed,
 );

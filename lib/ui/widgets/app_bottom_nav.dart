@@ -79,7 +79,9 @@ class AppBottomNav extends StatelessWidget {
                         destination: destinations[i],
                         isSelected: i == currentIndex,
                         onTap: () {
-                          if (i != currentIndex) HapticFeedback.selectionClick();
+                          if (i != currentIndex) {
+                            HapticFeedback.selectionClick();
+                          }
                           onSelected(i);
                         },
                       ),

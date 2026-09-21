@@ -45,48 +45,53 @@ class PartyRoundRecap extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: OverlayEntrance(
           child: AppCard(
-          floats: true,
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                'ROUND $roundNumber',
-                style: AppTextStyles.overline.copyWith(color: palette.textMuted),
-              ),
-              verticalSpace(AppSpacing.sm),
-              Text(
-                _verdict(winners),
-                textAlign: TextAlign.center,
-                style: AppTextStyles.headingMedium.copyWith(color: palette.textPrimary),
-              ),
-              verticalSpace(AppSpacing.xl),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      for (int i = 0; i < lines.length; i++) ...<Widget>[
-                        _RecapLine(line: lines[i]),
-                        if (i != lines.length - 1) const AppDivider(indent: 44),
-                      ],
-                    ],
+            floats: true,
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  'ROUND $roundNumber',
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
                   ),
                 ),
-              ),
-              if (bestPossibleWord.isNotEmpty) ...<Widget>[
+                verticalSpace(AppSpacing.sm),
+                Text(
+                  _verdict(winners),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.headingMedium.copyWith(
+                    color: palette.textPrimary,
+                  ),
+                ),
                 verticalSpace(AppSpacing.xl),
-                _BestWordStrip(word: bestPossibleWord),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        for (int i = 0; i < lines.length; i++) ...<Widget>[
+                          _RecapLine(line: lines[i]),
+                          if (i != lines.length - 1)
+                            const AppDivider(indent: 44),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+                if (bestPossibleWord.isNotEmpty) ...<Widget>[
+                  verticalSpace(AppSpacing.xl),
+                  _BestWordStrip(word: bestPossibleWord),
+                ],
+                verticalSpace(AppSpacing.xl),
+                AppButton(
+                  label: isFinalRound ? 'See Standings' : 'Next Round',
+                  size: AppButtonSize.large,
+                  trailingIcon: Icons.arrow_forward_rounded,
+                  onPressed: onContinue,
+                ),
               ],
-              verticalSpace(AppSpacing.xl),
-              AppButton(
-                label: isFinalRound ? 'See Standings' : 'Next Round',
-                size: AppButtonSize.large,
-                trailingIcon: Icons.arrow_forward_rounded,
-                onPressed: onContinue,
-              ),
-            ],
-          ),
+            ),
           ),
         ),
       ),
@@ -131,7 +136,9 @@ class _RecapLine extends StatelessWidget {
                   line.player.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
                 verticalSpace(3),
                 Text(
@@ -182,7 +189,10 @@ class _BestWordStrip extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      decoration: BoxDecoration(color: palette.recess, borderRadius: AppRadius.control),
+      decoration: BoxDecoration(
+        color: palette.recess,
+        borderRadius: AppRadius.control,
+      ),
       child: Column(
         children: <Widget>[
           Text(

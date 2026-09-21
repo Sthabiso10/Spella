@@ -73,7 +73,9 @@ void main() {
         navigatorKey: StackedService.navigatorKey,
         onGenerateRoute: router.onGenerateRoute,
         builder: (BuildContext context, Widget? view) => MediaQuery(
-          data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+          data: MediaQuery.of(
+            context,
+          ).copyWith(textScaler: TextScaler.linear(textScale)),
           child: view ?? const SizedBox.shrink(),
         ),
         home: child,
@@ -180,7 +182,9 @@ void main() {
     );
   });
 
-  testWidgets('the tab bar survives the largest text scale', (WidgetTester tester) async {
+  testWidgets('the tab bar survives the largest text scale', (
+    WidgetTester tester,
+  ) async {
     await pumpAt(tester, const RootView(), const Size(320, 568), textScale: 2);
 
     expect(find.byType(RootView), findsOneWidget);
@@ -188,14 +192,20 @@ void main() {
   });
 
   testWidgets('home survives a large text scale', (WidgetTester tester) async {
-    await pumpAt(tester, const HomeView(), const Size(320, 568), textScale: 1.6);
+    await pumpAt(
+      tester,
+      const HomeView(),
+      const Size(320, 568),
+      textScale: 1.6,
+    );
 
     expect(find.byType(HomeView), findsOneWidget);
   });
 }
 
-Widget _partyMatch() =>
-    const PartyMatchView(arguments: router.PartyMatchViewArguments(players: _fullTable));
+Widget _partyMatch() => const PartyMatchView(
+  arguments: router.PartyMatchViewArguments(players: _fullTable),
+);
 
 Widget _partyResults() => PartyResultsView(
   arguments: router.PartyResultsViewArguments(

@@ -64,7 +64,10 @@ class BotOpponentService implements OpponentService {
   }) async {
     final List<_ScoredWord> ranked = _rankSolutions(round, mode);
     if (ranked.isEmpty) {
-      return WordPlay.passed(playerId: opponent.id, secondsTaken: mode.secondsPerRound);
+      return WordPlay.passed(
+        playerId: opponent.id,
+        secondsTaken: mode.secondsPerRound,
+      );
     }
 
     final double skill = (opponent.level / _masteryLevel).clamp(0.15, 0.95);
@@ -100,7 +103,11 @@ class BotOpponentService implements OpponentService {
         _ScoredWord(
           word,
           _scoring
-              .bestScoreFor(word: word, bonuses: round.bonuses, rackSize: mode.rackSize)
+              .bestScoreFor(
+                word: word,
+                bonuses: round.bonuses,
+                rackSize: mode.rackSize,
+              )
               .total,
         ),
     ]..sort((_ScoredWord a, _ScoredWord b) => b.score.compareTo(a.score));

@@ -52,14 +52,18 @@ class AppEmptyState extends StatelessWidget {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: AppTextStyles.headingSmall.copyWith(color: palette.textPrimary),
+            style: AppTextStyles.headingSmall.copyWith(
+              color: palette.textPrimary,
+            ),
           ),
           if (message != null) ...<Widget>[
             verticalSpace(AppSpacing.xs + 2),
             Text(
               message!,
               textAlign: TextAlign.center,
-              style: AppTextStyles.bodySmall.copyWith(color: palette.textSecondary),
+              style: AppTextStyles.bodySmall.copyWith(
+                color: palette.textSecondary,
+              ),
             ),
           ],
           if (actionLabel != null && onAction != null) ...<Widget>[
@@ -98,7 +102,8 @@ class AppSkeleton extends StatefulWidget {
   State<AppSkeleton> createState() => _AppSkeletonState();
 }
 
-class _AppSkeletonState extends State<AppSkeleton> with SingleTickerProviderStateMixin {
+class _AppSkeletonState extends State<AppSkeleton>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1100),
@@ -146,7 +151,9 @@ class AppLoading extends StatelessWidget {
       dimension: size,
       child: CircularProgressIndicator(
         strokeWidth: size < 20 ? 2 : 2.5,
-        valueColor: AlwaysStoppedAnimation<Color>(color ?? context.palette.textMuted),
+        valueColor: AlwaysStoppedAnimation<Color>(
+          color ?? context.palette.textMuted,
+        ),
       ),
     );
   }

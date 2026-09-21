@@ -79,7 +79,9 @@ class TurnResultOverlay extends StatelessWidget {
                       player.name.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                      style: AppTextStyles.overline.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                     verticalSpace(AppSpacing.xl),
                     if (didPass) ...<Widget>[
@@ -127,11 +129,17 @@ class TurnResultOverlay extends StatelessWidget {
                           runSpacing: AppSpacing.xs,
                           children: <Widget>[
                             if (breakdown.wordMultiplier > 1)
-                              AppBadge(label: '×${breakdown.wordMultiplier} word'),
+                              AppBadge(
+                                label: '×${breakdown.wordMultiplier} word',
+                              ),
                             if (breakdown.lengthBonus > 0)
-                              AppBadge(label: '+${breakdown.lengthBonus} length'),
+                              AppBadge(
+                                label: '+${breakdown.lengthBonus} length',
+                              ),
                             if (breakdown.fullRackBonus > 0)
-                              AppBadge(label: '+${breakdown.fullRackBonus} rack'),
+                              AppBadge(
+                                label: '+${breakdown.fullRackBonus} rack',
+                              ),
                             if (breakdown.speedBonus > 0)
                               AppBadge(label: '+${breakdown.speedBonus} speed'),
                           ],

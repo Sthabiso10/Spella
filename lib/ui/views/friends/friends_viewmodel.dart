@@ -23,10 +23,8 @@ class FriendsViewModel extends ReactiveViewModel {
   String _query = '';
 
   @override
-  List<ListenableServiceMixin> get listenableServices => <ListenableServiceMixin>[
-    _socialService,
-    _playerService,
-  ];
+  List<ListenableServiceMixin> get listenableServices =>
+      <ListenableServiceMixin>[_socialService, _playerService];
 
   String get query => _query;
 
@@ -82,7 +80,8 @@ class FriendsViewModel extends ReactiveViewModel {
     await _startMatch(accepted.from, accepted.mode);
   }
 
-  void declineInvite(GameInvite invite) => _socialService.declineInvite(invite.id);
+  void declineInvite(GameInvite invite) =>
+      _socialService.declineInvite(invite.id);
 
   Future<void> challenge(Player opponent, {GameMode mode = GameMode.classic}) =>
       _startMatch(opponent, mode);
@@ -95,8 +94,10 @@ class FriendsViewModel extends ReactiveViewModel {
   Future<void> startPassAndPlay() =>
       _navigation.navigateTo(Routes.partySetup) ?? Future<void>.value();
 
-  Future<void> playBot() =>
-      _startMatch(botOpponentFor(_playerService.currentPlayer), GameMode.classic);
+  Future<void> playBot() => _startMatch(
+    botOpponentFor(_playerService.currentPlayer),
+    GameMode.classic,
+  );
 
   Future<void> _startMatch(Player opponent, GameMode mode) =>
       _navigation.navigateTo(

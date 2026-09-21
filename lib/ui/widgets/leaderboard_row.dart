@@ -87,7 +87,9 @@ class LeaderboardRow extends StatelessWidget {
                   isMe ? 'You' : entry.player.username,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.label.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.label.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
                 if (!dense) ...<Widget>[
                   verticalSpace(2),

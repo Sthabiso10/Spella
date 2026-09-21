@@ -64,9 +64,8 @@ class EmptySocialService with ListenableServiceMixin implements SocialService {
 
   /// Held as reactive values, empty, so the UI is already wired to update the
   /// instant a backend starts filling them.
-  final ReactiveValue<List<GameInvite>> _invites = ReactiveValue<List<GameInvite>>(
-    const <GameInvite>[],
-  );
+  final ReactiveValue<List<GameInvite>> _invites =
+      ReactiveValue<List<GameInvite>>(const <GameInvite>[]);
 
   final ReactiveValue<List<FriendActivity>> _activity =
       ReactiveValue<List<FriendActivity>>(const <FriendActivity>[]);
@@ -81,7 +80,8 @@ class EmptySocialService with ListenableServiceMixin implements SocialService {
   List<Player> get suggestedMatches => const <Player>[];
 
   @override
-  List<GameInvite> get pendingInvites => List<GameInvite>.unmodifiable(_invites.value);
+  List<GameInvite> get pendingInvites =>
+      List<GameInvite>.unmodifiable(_invites.value);
 
   @override
   List<FriendActivity> get activityFeed =>
@@ -128,8 +128,9 @@ class EmptySocialService with ListenableServiceMixin implements SocialService {
   void toggleLike(String activityId) {
     _activity.value = _activity.value
         .map(
-          (FriendActivity entry) =>
-              entry.id == activityId ? entry.copyWith(isLiked: !entry.isLiked) : entry,
+          (FriendActivity entry) => entry.id == activityId
+              ? entry.copyWith(isLiked: !entry.isLiked)
+              : entry,
         )
         .toList(growable: false);
   }

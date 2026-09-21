@@ -135,30 +135,31 @@ void main() {
   });
 
   group('interruptions', () {
-    testWidgets('leaving the foreground pauses rather than draining the clock', (
-      WidgetTester tester,
-    ) async {
-      await tester.pumpWidget(const SizedBox());
-      final MatchViewModel model = await _playing(tester);
+    testWidgets(
+      'leaving the foreground pauses rather than draining the clock',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(const SizedBox());
+        final MatchViewModel model = await _playing(tester);
 
-      await tester.pump(const Duration(seconds: 4));
-      final int atPause = model.secondsRemaining;
+        await tester.pump(const Duration(seconds: 4));
+        final int atPause = model.secondsRemaining;
 
-      model.didChangeAppLifecycleState(AppLifecycleState.paused);
-      expect(model.phase, MatchPhase.paused);
-      expect(model.isPaused, isTrue);
+        model.didChangeAppLifecycleState(AppLifecycleState.paused);
+        expect(model.phase, MatchPhase.paused);
+        expect(model.isPaused, isTrue);
 
-      // The round would previously have run down inside a phone call.
-      await tester.pump(const Duration(seconds: 30));
-      expect(model.secondsRemaining, atPause);
+        // The round would previously have run down inside a phone call.
+        await tester.pump(const Duration(seconds: 30));
+        expect(model.secondsRemaining, atPause);
 
-      model.resumeFromPause();
-      expect(model.phase, MatchPhase.playing);
+        model.resumeFromPause();
+        expect(model.phase, MatchPhase.playing);
 
-      await tester.pump(const Duration(seconds: 2));
-      expect(model.secondsRemaining, atPause - 2);
-      model.dispose();
-    });
+        await tester.pump(const Duration(seconds: 2));
+        expect(model.secondsRemaining, atPause - 2);
+        model.dispose();
+      },
+    );
 
     testWidgets('the board stays covered while the game is paused', (
       WidgetTester tester,

@@ -10,13 +10,15 @@ class WordPlay {
   });
 
   /// A round the player let time out on, or skipped.
-  factory WordPlay.passed({required String playerId, required int secondsTaken}) =>
-      WordPlay(
-        playerId: playerId,
-        word: '',
-        breakdown: ScoreBreakdown.empty,
-        secondsTaken: secondsTaken,
-      );
+  factory WordPlay.passed({
+    required String playerId,
+    required int secondsTaken,
+  }) => WordPlay(
+    playerId: playerId,
+    word: '',
+    breakdown: ScoreBreakdown.empty,
+    secondsTaken: secondsTaken,
+  );
 
   final String playerId;
 

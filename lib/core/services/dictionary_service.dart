@@ -104,7 +104,11 @@ class DictionaryService {
   ///
   /// Deliberately narrower than [isValidWord]: this drives hints, the bot and
   /// the best-word reveal, which should surface words worth learning.
-  List<String> solutionsFor(Iterable<String> letters, {int minLength = 3, int? limit}) {
+  List<String> solutionsFor(
+    Iterable<String> letters, {
+    int minLength = 3,
+    int? limit,
+  }) {
     final Uint8List available = _countsOf(letters);
     final int maxLength = letters.length;
     final List<String> matches = <String>[];

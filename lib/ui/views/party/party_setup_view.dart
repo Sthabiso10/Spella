@@ -21,7 +21,11 @@ class PartySetupView extends StackedView<PartySetupViewModel> {
   const PartySetupView({super.key});
 
   @override
-  Widget builder(BuildContext context, PartySetupViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    PartySetupViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return Scaffold(
@@ -47,10 +51,15 @@ class PartySetupView extends StackedView<PartySetupViewModel> {
                     verticalSpace(AppSpacing.xl),
                     SectionHeader(
                       title: 'Players',
-                      count: '${viewModel.players.length}/${PartyMatch.maxPlayers}',
+                      count:
+                          '${viewModel.players.length}/${PartyMatch.maxPlayers}',
                     ),
                     verticalSpace(AppSpacing.sm),
-                    for (int i = 0; i < viewModel.players.length; i++) ...<Widget>[
+                    for (
+                      int i = 0;
+                      i < viewModel.players.length;
+                      i++
+                    ) ...<Widget>[
                       _PlayerRow(
                         player: viewModel.players[i],
                         position: i + 1,
@@ -61,7 +70,8 @@ class PartySetupView extends StackedView<PartySetupViewModel> {
                             ? () => viewModel.removePlayer(viewModel.players[i])
                             : null,
                       ),
-                      if (i != viewModel.players.length - 1) const AppDivider(indent: 52),
+                      if (i != viewModel.players.length - 1)
+                        const AppDivider(indent: 52),
                     ],
                   ],
                 ),
@@ -75,10 +85,12 @@ class PartySetupView extends StackedView<PartySetupViewModel> {
   }
 
   @override
-  PartySetupViewModel viewModelBuilder(BuildContext context) => PartySetupViewModel();
+  PartySetupViewModel viewModelBuilder(BuildContext context) =>
+      PartySetupViewModel();
 
   @override
-  void onViewModelReady(PartySetupViewModel viewModel) => viewModel.initialise();
+  void onViewModelReady(PartySetupViewModel viewModel) =>
+      viewModel.initialise();
 }
 
 class _Header extends StatelessWidget {
@@ -114,14 +126,18 @@ class _Header extends StatelessWidget {
                 verticalSpace(AppSpacing.sm),
                 Text(
                   'Pass & Play',
-                  style: AppTextStyles.headingLarge.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.headingLarge.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
                 verticalSpace(AppSpacing.xs + 2),
                 Text(
                   'Everyone plays the same rack, one after the other. '
                   '${viewModel.mode.totalRounds} rounds, '
                   '${viewModel.mode.secondsPerRound} seconds a turn.',
-                  style: AppTextStyles.bodySmall.copyWith(color: palette.textSecondary),
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: palette.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -181,7 +197,8 @@ class _NameFieldState extends State<_NameField> {
     final AppPalette palette = context.palette;
     final bool isFull = !widget.viewModel.canAddPlayer;
     final bool isDuplicate = widget.viewModel.isDuplicate(_controller.text);
-    final bool canSubmit = !isFull && !isDuplicate && _controller.text.trim().isNotEmpty;
+    final bool canSubmit =
+        !isFull && !isDuplicate && _controller.text.trim().isNotEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,7 +211,9 @@ class _NameFieldState extends State<_NameField> {
                 height: 48,
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
                 decoration: BoxDecoration(
-                  color: _focusNode.hasFocus ? palette.surfaceElevated : palette.surface,
+                  color: _focusNode.hasFocus
+                      ? palette.surfaceElevated
+                      : palette.surface,
                   borderRadius: AppRadius.control,
                   border: Border.all(
                     color: isDuplicate
@@ -215,7 +234,9 @@ class _NameFieldState extends State<_NameField> {
                     textCapitalization: TextCapitalization.words,
                     maxLength: 14,
                     cursorWidth: 1.5,
-                    style: AppTextStyles.body.copyWith(color: palette.textPrimary),
+                    style: AppTextStyles.body.copyWith(
+                      color: palette.textPrimary,
+                    ),
                     decoration: InputDecoration(
                       filled: false,
                       border: InputBorder.none,
@@ -226,7 +247,9 @@ class _NameFieldState extends State<_NameField> {
                       counterText: '',
                       contentPadding: EdgeInsets.zero,
                       hintText: isFull ? 'Table is full' : 'Add a player',
-                      hintStyle: AppTextStyles.body.copyWith(color: palette.textMuted),
+                      hintStyle: AppTextStyles.body.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                   ),
                 ),

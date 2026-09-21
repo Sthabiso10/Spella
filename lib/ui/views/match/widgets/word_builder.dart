@@ -84,5 +84,8 @@ class WordBuilder extends StatelessWidget {
 
   /// Largest tile size that fits [count] tiles plus gaps into [availableWidth].
   static double tileSizeFor(double availableWidth, int count) =>
-      TileStripLayout.resolve(availableWidth: availableWidth, count: count).tileSize;
+      TileStripLayout.resolve(
+        availableWidth: availableWidth,
+        count: count,
+      ).tileSize;
 }

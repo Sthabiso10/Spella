@@ -29,7 +29,11 @@ class ResultsView extends StackedView<ResultsViewModel> {
   final ResultsViewArguments arguments;
 
   @override
-  Widget builder(BuildContext context, ResultsViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    ResultsViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return Scaffold(
@@ -132,7 +136,11 @@ class _Verdict extends StatelessWidget {
         ),
         if (viewModel.isMvp) ...<Widget>[
           verticalSpace(AppSpacing.lg),
-          const AppBadge(label: 'MVP', tone: BadgeTone.accent, icon: Icons.star_rounded),
+          const AppBadge(
+            label: 'MVP',
+            tone: BadgeTone.accent,
+            icon: Icons.star_rounded,
+          ),
         ],
       ],
     );
@@ -164,7 +172,9 @@ class _FinalScore extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
           child: Text(
             '–',
-            style: AppTextStyles.headingMedium.copyWith(color: palette.textMuted),
+            style: AppTextStyles.headingMedium.copyWith(
+              color: palette.textMuted,
+            ),
           ),
         ),
         Expanded(
@@ -294,14 +304,22 @@ class _BestWords extends StatelessWidget {
         if (mine != null) _BestWordRow(owner: 'You', play: mine, isMine: true),
         if (mine != null && theirs != null) const AppDivider(),
         if (theirs != null)
-          _BestWordRow(owner: viewModel.opponent.username, play: theirs, isMine: false),
+          _BestWordRow(
+            owner: viewModel.opponent.username,
+            play: theirs,
+            isMine: false,
+          ),
       ],
     );
   }
 }
 
 class _BestWordRow extends StatelessWidget {
-  const _BestWordRow({required this.owner, required this.play, required this.isMine});
+  const _BestWordRow({
+    required this.owner,
+    required this.play,
+    required this.isMine,
+  });
 
   final String owner;
   final WordPlay play;
@@ -323,7 +341,9 @@ class _BestWordRow extends StatelessWidget {
                   owner.toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
                 verticalSpace(AppSpacing.xs + 2),
                 Text(

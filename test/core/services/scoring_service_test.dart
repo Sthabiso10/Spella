@@ -8,7 +8,8 @@ List<LetterTile> tilesOf(String word) => <LetterTile>[
   for (int i = 0; i < word.length; i++) LetterTile.of(word[i], index: i),
 ];
 
-List<SlotBonus> plainSlots(int count) => List<SlotBonus>.filled(count, SlotBonus.none);
+List<SlotBonus> plainSlots(int count) =>
+    List<SlotBonus>.filled(count, SlotBonus.none);
 
 void main() {
   final ScoringService scoring = ScoringService();
@@ -41,7 +42,8 @@ void main() {
     });
 
     test('multiplies the whole word when a word bonus is covered', () {
-      final List<SlotBonus> bonuses = plainSlots(7).toList()..[1] = SlotBonus.doubleWord;
+      final List<SlotBonus> bonuses = plainSlots(7).toList()
+        ..[1] = SlotBonus.doubleWord;
 
       final ScoreBreakdown breakdown = scoring.scoreArrangement(
         tiles: tilesOf('cat'),
@@ -54,7 +56,8 @@ void main() {
     });
 
     test('ignores a bonus the word is too short to reach', () {
-      final List<SlotBonus> bonuses = plainSlots(7).toList()..[5] = SlotBonus.tripleWord;
+      final List<SlotBonus> bonuses = plainSlots(7).toList()
+        ..[5] = SlotBonus.tripleWord;
 
       final ScoreBreakdown breakdown = scoring.scoreArrangement(
         tiles: tilesOf('cat'),

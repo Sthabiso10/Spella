@@ -17,7 +17,14 @@ class PartySetupViewModel extends BaseViewModel {
   final Uuid _uuid = const Uuid();
 
   /// Faces handed out in order, so no two people at the table share one.
-  static const List<String> avatars = <String>['🦊', '🐙', '🦉', '🐉', '🐳', '🦁'];
+  static const List<String> avatars = <String>[
+    '🦊',
+    '🐙',
+    '🦉',
+    '🐉',
+    '🐳',
+    '🦁',
+  ];
 
   final List<PartyPlayer> _players = <PartyPlayer>[];
 

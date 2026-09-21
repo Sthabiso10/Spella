@@ -48,7 +48,9 @@ class PartyResultsViewModel extends BaseViewModel {
     for (final PartyStanding standing in standings) {
       final int score = standing.bestPlay?.score ?? 0;
       if (score <= 0) continue;
-      if (holder == null || score > (holder.bestPlay?.score ?? 0)) holder = standing;
+      if (holder == null || score > (holder.bestPlay?.score ?? 0)) {
+        holder = standing;
+      }
     }
     return holder;
   }

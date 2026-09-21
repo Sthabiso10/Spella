@@ -43,7 +43,10 @@ class SectionHeader extends StatelessWidget {
           Container(
             width: 5,
             height: 5,
-            decoration: BoxDecoration(color: palette.success, shape: BoxShape.circle),
+            decoration: BoxDecoration(
+              color: palette.success,
+              shape: BoxShape.circle,
+            ),
           ),
           horizontalSpace(AppSpacing.sm),
         ],
@@ -56,7 +59,10 @@ class SectionHeader extends StatelessWidget {
         ),
         if (count != null) ...<Widget>[
           horizontalSpace(AppSpacing.sm),
-          Text(count!, style: AppTextStyles.label.copyWith(color: palette.textMuted)),
+          Text(
+            count!,
+            style: AppTextStyles.label.copyWith(color: palette.textMuted),
+          ),
         ],
         const Spacer(),
         // Only a real action earns a control. Rendering one without a callback
@@ -80,7 +86,11 @@ class SectionHeader extends StatelessWidget {
                     ),
                   ),
                   horizontalSpace(2),
-                  Icon(Icons.chevron_right_rounded, size: 14, color: palette.textMuted),
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    size: 14,
+                    color: palette.textMuted,
+                  ),
                 ],
               ),
             ),
@@ -95,7 +105,12 @@ class SectionHeader extends StatelessWidget {
 /// Every tab opens the same way, which is most of what makes four separate
 /// screens feel like one product.
 class PageHeader extends StatelessWidget {
-  const PageHeader({required this.title, this.subtitle, this.trailing, super.key});
+  const PageHeader({
+    required this.title,
+    this.subtitle,
+    this.trailing,
+    super.key,
+  });
 
   final String title;
   final String? subtitle;
@@ -121,19 +136,26 @@ class PageHeader extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: AppTextStyles.headingLarge.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.headingLarge.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
                 if (subtitle != null) ...<Widget>[
                   verticalSpace(AppSpacing.xs + 2),
                   Text(
                     subtitle!,
-                    style: AppTextStyles.bodySmall.copyWith(color: palette.textSecondary),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: palette.textSecondary,
+                    ),
                   ),
                 ],
               ],
             ),
           ),
-          if (trailing != null) ...<Widget>[horizontalSpace(AppSpacing.md), trailing!],
+          if (trailing != null) ...<Widget>[
+            horizontalSpace(AppSpacing.md),
+            trailing!,
+          ],
         ],
       ),
     );

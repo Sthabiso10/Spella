@@ -42,7 +42,8 @@ class Player {
   final Set<String> ownedAvatars;
 
   /// `true` when [candidate] is equipped or already unlocked.
-  bool owns(String candidate) => candidate == avatar || ownedAvatars.contains(candidate);
+  bool owns(String candidate) =>
+      candidate == avatar || ownedAvatars.contains(candidate);
 
   /// XP required to reach the next level. Grows gently so early levels feel
   /// quick and later ones still mean something.
@@ -54,7 +55,8 @@ class Player {
   int get gamesPlayed => wins + losses;
 
   /// Win rate as a percentage; `0` before any games are played.
-  int get winRate => gamesPlayed == 0 ? 0 : ((wins / gamesPlayed) * 100).round();
+  int get winRate =>
+      gamesPlayed == 0 ? 0 : ((wins / gamesPlayed) * 100).round();
 
   Player copyWith({
     String? username,

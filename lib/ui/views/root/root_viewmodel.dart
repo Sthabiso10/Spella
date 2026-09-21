@@ -10,9 +10,8 @@ class RootViewModel extends ReactiveViewModel {
   final AppTabService _tabService = locator<AppTabService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => <ListenableServiceMixin>[
-    _tabService,
-  ];
+  List<ListenableServiceMixin> get listenableServices =>
+      <ListenableServiceMixin>[_tabService];
 
   int get currentIndex => _tabService.currentIndex;
 

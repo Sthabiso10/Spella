@@ -84,8 +84,10 @@ class _CountUpTextState extends State<CountUpText>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _controller,
-      builder: (BuildContext context, Widget? child) =>
-          Text((widget.formatter ?? formatPoints)(_running), style: widget.style),
+      builder: (BuildContext context, Widget? child) => Text(
+        (widget.formatter ?? formatPoints)(_running),
+        style: widget.style,
+      ),
     );
   }
 }
@@ -119,22 +121,23 @@ class _PulseOnChangeState extends State<PulseOnChange>
     duration: AppMotion.normal,
   );
 
-  late final Animation<double> _pulse = TweenSequence<double>(<TweenSequenceItem<double>>[
-    TweenSequenceItem<double>(
-      tween: Tween<double>(
-        begin: 1,
-        end: widget.scale,
-      ).chain(CurveTween(curve: AppMotion.enter)),
-      weight: 35,
-    ),
-    TweenSequenceItem<double>(
-      tween: Tween<double>(
-        begin: widget.scale,
-        end: 1,
-      ).chain(CurveTween(curve: AppMotion.standard)),
-      weight: 65,
-    ),
-  ]).animate(_controller);
+  late final Animation<double> _pulse =
+      TweenSequence<double>(<TweenSequenceItem<double>>[
+        TweenSequenceItem<double>(
+          tween: Tween<double>(
+            begin: 1,
+            end: widget.scale,
+          ).chain(CurveTween(curve: AppMotion.enter)),
+          weight: 35,
+        ),
+        TweenSequenceItem<double>(
+          tween: Tween<double>(
+            begin: widget.scale,
+            end: 1,
+          ).chain(CurveTween(curve: AppMotion.standard)),
+          weight: 65,
+        ),
+      ]).animate(_controller);
 
   @override
   void didUpdateWidget(PulseOnChange oldWidget) {

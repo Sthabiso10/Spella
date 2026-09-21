@@ -41,7 +41,12 @@ void main() {
     test('accepts obscure words the curated list has never heard of', () {
       // These live only in the bundled list. Players should not be told a real
       // word is not a word.
-      for (final String word in <String>['aalii', 'syzygy', 'quixotry', 'phaeton']) {
+      for (final String word in <String>[
+        'aalii',
+        'syzygy',
+        'quixotry',
+        'phaeton',
+      ]) {
         expect(dictionary.isValidWord(word), isTrue, reason: word);
       }
     });
@@ -59,7 +64,9 @@ void main() {
 
   group('generation tier', () {
     test('finds only words spellable from the given letters', () {
-      final List<String> solutions = dictionary.solutionsFor('planet'.split(''));
+      final List<String> solutions = dictionary.solutionsFor(
+        'planet'.split(''),
+      );
 
       expect(solutions, contains('plane'));
       expect(solutions, contains('plant'));
@@ -69,7 +76,9 @@ void main() {
     test('never surfaces obscure words to hints, bots or reveals', () {
       // "aalii" is spellable from these letters and is a valid play, but it is
       // not the kind of word the game should teach or the bot should play.
-      final List<String> solutions = dictionary.solutionsFor('aaliix'.split(''));
+      final List<String> solutions = dictionary.solutionsFor(
+        'aaliix'.split(''),
+      );
 
       expect(dictionary.isValidWord('aalii'), isTrue);
       expect(solutions, isNot(contains('aalii')));

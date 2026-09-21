@@ -68,14 +68,20 @@ class ScoringService {
         word.split('').map(LetterData.valueOf).toList(growable: false)
           ..sort((int a, int b) => b.compareTo(a));
 
-    final List<SlotBonus> covered = bonuses.take(word.length).toList(growable: false);
+    final List<SlotBonus> covered = bonuses
+        .take(word.length)
+        .toList(growable: false);
     final List<int> letterMultipliers =
-        covered.map((SlotBonus bonus) => bonus.letterMultiplier).toList(growable: false)
+        covered
+            .map((SlotBonus bonus) => bonus.letterMultiplier)
+            .toList(growable: false)
           ..sort((int a, int b) => b.compareTo(a));
 
     int letterPoints = 0;
     for (int i = 0; i < letterValues.length; i++) {
-      final int multiplier = i < letterMultipliers.length ? letterMultipliers[i] : 1;
+      final int multiplier = i < letterMultipliers.length
+          ? letterMultipliers[i]
+          : 1;
       letterPoints += letterValues[i] * multiplier;
     }
 

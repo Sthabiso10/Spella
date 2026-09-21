@@ -82,7 +82,9 @@ class LocalPlayerService with ListenableServiceMixin implements PlayerService {
       coins: player.coins + result.coinsEarned,
       gems: player.gems + result.gemsEarned,
       wins: won ? player.wins + 1 : player.wins,
-      losses: result.outcome == MatchOutcome.lost ? player.losses + 1 : player.losses,
+      losses: result.outcome == MatchOutcome.lost
+          ? player.losses + 1
+          : player.losses,
       streak: won ? player.streak + 1 : 0,
     );
   }

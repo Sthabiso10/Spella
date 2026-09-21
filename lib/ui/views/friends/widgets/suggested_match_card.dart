@@ -13,7 +13,11 @@ import 'package:spella/ui/widgets/app_card.dart';
 /// being offered rather than a list being browsed, and the card is what says so
 /// without needing a label to explain it.
 class SuggestedMatchCard extends StatelessWidget {
-  const SuggestedMatchCard({required this.player, required this.onChallenge, super.key});
+  const SuggestedMatchCard({
+    required this.player,
+    required this.onChallenge,
+    super.key,
+  });
 
   final Player player;
   final VoidCallback onChallenge;
@@ -36,7 +40,9 @@ class SuggestedMatchCard extends StatelessWidget {
               player.username,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTextStyles.labelSmall.copyWith(color: palette.textPrimary),
+              style: AppTextStyles.labelSmall.copyWith(
+                color: palette.textPrimary,
+              ),
             ),
             verticalSpace(2),
             Text(

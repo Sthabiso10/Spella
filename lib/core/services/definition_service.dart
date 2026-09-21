@@ -22,8 +22,10 @@ abstract class DefinitionService {
 /// missing entry is cleanly distinguishable from a failed request - which is
 /// why this is safe to consult and a status-code-only API would not be.
 class FreeDictionaryApiService implements DefinitionService {
-  FreeDictionaryApiService({http.Client? client, this.timeout = _defaultTimeout})
-    : _client = client ?? http.Client();
+  FreeDictionaryApiService({
+    http.Client? client,
+    this.timeout = _defaultTimeout,
+  }) : _client = client ?? http.Client();
 
   static const String _host = 'freedictionaryapi.com';
   static const String _basePath = '/api/v1/entries/en';
@@ -62,7 +64,10 @@ class FreeDictionaryApiService implements DefinitionService {
       // Decode explicitly rather than via `response.body`, which falls back to
       // latin-1 when the server omits a charset and would mangle the IPA
       // pronunciations. JSON is UTF-8 by spec.
-      return _parse(word, utf8.decode(response.bodyBytes, allowMalformed: true));
+      return _parse(
+        word,
+        utf8.decode(response.bodyBytes, allowMalformed: true),
+      );
     } on Object catch (error) {
       // Network, timeout, or malformed payload - all equally non-fatal.
       debugPrint('Spella: definition lookup for "$word" failed ($error)');
@@ -103,7 +108,8 @@ class FreeDictionaryApiService implements DefinitionService {
   }
 
   Map<String, dynamic>? _firstSenseWithDefinition(Map<String, dynamic> entry) {
-    final List<dynamic> senses = entry['senses'] as List<dynamic>? ?? const <dynamic>[];
+    final List<dynamic> senses =
+        entry['senses'] as List<dynamic>? ?? const <dynamic>[];
 
     for (final dynamic sense in senses) {
       if (sense is! Map<String, dynamic>) continue;

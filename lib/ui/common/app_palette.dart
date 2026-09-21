@@ -267,7 +267,8 @@ class AppPalette extends ThemeExtension<AppPalette> {
 
 /// Shorthand for reaching the palette and the type scale from a [BuildContext].
 extension AppPaletteX on BuildContext {
-  AppPalette get palette => Theme.of(this).extension<AppPalette>() ?? AppPalette.dark;
+  AppPalette get palette =>
+      Theme.of(this).extension<AppPalette>() ?? AppPalette.dark;
 
   TextTheme get texts => Theme.of(this).textTheme;
 }

@@ -29,12 +29,13 @@ WordPlay _play(String playerId, String word, int score) => WordPlay(
   secondsTaken: 10,
 );
 
-PartyMatch _matchOf(List<PartyRound> rounds, {List<PartyPlayer>? players}) => PartyMatch(
-  id: 'match',
-  mode: GameMode.party,
-  players: players ?? const <PartyPlayer>[_ana, _ben, _cal],
-  rounds: rounds,
-);
+PartyMatch _matchOf(List<PartyRound> rounds, {List<PartyPlayer>? players}) =>
+    PartyMatch(
+      id: 'match',
+      mode: GameMode.party,
+      players: players ?? const <PartyPlayer>[_ana, _ben, _cal],
+      rounds: rounds,
+    );
 
 void main() {
   group('PartyRound', () {
@@ -127,7 +128,10 @@ void main() {
       final PartyMatch match = _matchOf(<PartyRound>[
         _round().withPlay('a', _play('a', 'rat', 5)),
         _round().withPlay('a', _play('a', 'crate', 22)),
-        _round().withPlay('a', WordPlay.passed(playerId: 'a', secondsTaken: 45)),
+        _round().withPlay(
+          'a',
+          WordPlay.passed(playerId: 'a', secondsTaken: 45),
+        ),
       ]);
 
       expect(match.bestPlayFor('a')?.word, 'crate');

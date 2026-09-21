@@ -20,7 +20,11 @@ class RanksView extends StackedView<RanksViewModel> {
   const RanksView({super.key});
 
   @override
-  Widget builder(BuildContext context, RanksViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    RanksViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return Scaffold(
@@ -97,7 +101,9 @@ class RanksView extends StackedView<RanksViewModel> {
           ),
         ),
       ),
-      bottomSheet: viewModel.hasBoard ? _MyStandingBar(entry: viewModel.myEntry) : null,
+      bottomSheet: viewModel.hasBoard
+          ? _MyStandingBar(entry: viewModel.myEntry)
+          : null,
     );
   }
 
@@ -128,7 +134,9 @@ class _MyStandingBar extends StatelessWidget {
         AppSpacing.lg,
         0,
         AppSpacing.lg,
-        AppBottomNav.height + MediaQuery.viewPaddingOf(context).bottom + AppSpacing.md,
+        AppBottomNav.height +
+            MediaQuery.viewPaddingOf(context).bottom +
+            AppSpacing.md,
       ),
       child: Container(
         padding: const EdgeInsets.symmetric(
@@ -160,7 +168,9 @@ class _MyStandingBar extends StatelessWidget {
             ),
             Text(
               formatPoints(entry.points),
-              style: AppTextStyles.scoreSmall.copyWith(color: palette.textPrimary),
+              style: AppTextStyles.scoreSmall.copyWith(
+                color: palette.textPrimary,
+              ),
             ),
           ],
         ),

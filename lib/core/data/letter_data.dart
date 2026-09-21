@@ -69,8 +69,9 @@ class LetterData {
 
   /// Flattened frequency table, e.g. `['a','a', ... ,'b','b', ...]`, so a
   /// filler letter can be drawn with a single random index.
-  static final List<String> weightedAlphabet = List<String>.unmodifiable(<String>[
-    for (final MapEntry<String, int> entry in frequencies.entries)
-      ...List<String>.filled(entry.value, entry.key),
-  ]);
+  static final List<String> weightedAlphabet =
+      List<String>.unmodifiable(<String>[
+        for (final MapEntry<String, int> entry in frequencies.entries)
+          ...List<String>.filled(entry.value, entry.key),
+      ]);
 }

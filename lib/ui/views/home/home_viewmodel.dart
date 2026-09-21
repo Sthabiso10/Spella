@@ -19,10 +19,8 @@ class HomeViewModel extends ReactiveViewModel {
   final NavigationService _navigation = locator<NavigationService>();
 
   @override
-  List<ListenableServiceMixin> get listenableServices => <ListenableServiceMixin>[
-    _playerService,
-    _socialService,
-  ];
+  List<ListenableServiceMixin> get listenableServices =>
+      <ListenableServiceMixin>[_playerService, _socialService];
 
   Player get player => _playerService.currentPlayer;
 
@@ -75,7 +73,9 @@ class HomeViewModel extends ReactiveViewModel {
   /// never appeared. Both are now silent when they have nothing to say, and
   /// this single prompt - which has an action attached - stands in for them.
   bool get showFriendsPrompt =>
-      _socialService.friends.isEmpty && activityFeed.isEmpty && topSpellers.isEmpty;
+      _socialService.friends.isEmpty &&
+      activityFeed.isEmpty &&
+      topSpellers.isEmpty;
 
   String get greeting {
     final int hour = DateTime.now().hour;

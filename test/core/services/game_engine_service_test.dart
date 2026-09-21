@@ -17,7 +17,12 @@ import 'package:spella/core/services/opponent_service.dart';
 import 'package:spella/core/services/rack_generator_service.dart';
 import 'package:spella/core/services/scoring_service.dart';
 
-const Player _host = Player(id: 'host', username: 'Host', avatar: '🦸', level: 20);
+const Player _host = Player(
+  id: 'host',
+  username: 'Host',
+  avatar: '🦸',
+  level: 20,
+);
 const Player _guest = Player(
   id: 'guest',
   username: 'Guest',
@@ -142,7 +147,8 @@ void main() {
       final GameMatch match = newMatch();
       final RoundBoard board = RoundBoard(
         rack: <LetterTile>[
-          for (int i = 0; i < 'xqz'.length; i++) LetterTile.of('xqz'[i], index: i),
+          for (int i = 0; i < 'xqz'.length; i++)
+            LetterTile.of('xqz'[i], index: i),
         ],
         bonuses: match.currentRound!.bonuses.take(3).toList(),
       )..spell('xqz');
@@ -195,7 +201,9 @@ void main() {
         final RoundBoard board = engine.boardFor(match);
         expect(board.spell(hint!), isTrue);
         expect(
-          engine.validate(board: board, mode: match.mode, secondsRemaining: 10).isValid,
+          engine
+              .validate(board: board, mode: match.mode, secondsRemaining: 10)
+              .isValid,
           isTrue,
         );
       }
@@ -239,11 +247,17 @@ void main() {
 
       expect(match.isComplete, isTrue);
       expect(match.outcome, MatchOutcome.won);
-      expect(engine.advanceRound(match).currentRoundIndex, match.currentRoundIndex);
+      expect(
+        engine.advanceRound(match).currentRoundIndex,
+        match.currentRoundIndex,
+      );
     });
 
     test('equal scores end in a draw', () {
-      expect(finished(hostScore: 25, guestScore: 25).outcome, MatchOutcome.draw);
+      expect(
+        finished(hostScore: 25, guestScore: 25).outcome,
+        MatchOutcome.draw,
+      );
     });
 
     test('passes score nothing and never count as a best word', () {
@@ -262,7 +276,9 @@ void main() {
 
   group('rewards', () {
     test('a win pays more than a loss', () {
-      final MatchResult win = engine.buildResult(finished(hostScore: 90, guestScore: 10));
+      final MatchResult win = engine.buildResult(
+        finished(hostScore: 90, guestScore: 10),
+      );
       final MatchResult loss = engine.buildResult(
         finished(hostScore: 10, guestScore: 90),
       );
@@ -273,8 +289,14 @@ void main() {
     });
 
     test('MVP requires winning with the best word of the match', () {
-      expect(engine.buildResult(finished(hostScore: 90, guestScore: 10)).isMvp, isTrue);
-      expect(engine.buildResult(finished(hostScore: 10, guestScore: 90)).isMvp, isFalse);
+      expect(
+        engine.buildResult(finished(hostScore: 90, guestScore: 10)).isMvp,
+        isTrue,
+      );
+      expect(
+        engine.buildResult(finished(hostScore: 10, guestScore: 90)).isMvp,
+        isFalse,
+      );
     });
   });
 
@@ -301,36 +323,42 @@ void main() {
         ),
         isTrue,
       );
-      expect(play.secondsTaken, inInclusiveRange(1, match.mode.secondsPerRound));
-    });
-
-    test('a high level bot outscores a low level one on the same rack', () async {
-      final BotOpponentService bot = BotOpponentService(
-        dictionary,
-        scoring,
-        random: Random(11),
+      expect(
+        play.secondsTaken,
+        inInclusiveRange(1, match.mode.secondsPerRound),
       );
-      final GameMatch match = newMatch(GameMode.marathon);
-
-      int strongTotal = 0;
-      int weakTotal = 0;
-
-      for (int i = 0; i < 12; i++) {
-        final WordPlay strong = await bot.playRound(
-          round: match.currentRound!,
-          mode: match.mode,
-          opponent: _guest.copyWith(level: 40),
-        );
-        final WordPlay weak = await bot.playRound(
-          round: match.currentRound!,
-          mode: match.mode,
-          opponent: _guest.copyWith(level: 2),
-        );
-        strongTotal += strong.score;
-        weakTotal += weak.score;
-      }
-
-      expect(strongTotal, greaterThan(weakTotal));
     });
+
+    test(
+      'a high level bot outscores a low level one on the same rack',
+      () async {
+        final BotOpponentService bot = BotOpponentService(
+          dictionary,
+          scoring,
+          random: Random(11),
+        );
+        final GameMatch match = newMatch(GameMode.marathon);
+
+        int strongTotal = 0;
+        int weakTotal = 0;
+
+        for (int i = 0; i < 12; i++) {
+          final WordPlay strong = await bot.playRound(
+            round: match.currentRound!,
+            mode: match.mode,
+            opponent: _guest.copyWith(level: 40),
+          );
+          final WordPlay weak = await bot.playRound(
+            round: match.currentRound!,
+            mode: match.mode,
+            opponent: _guest.copyWith(level: 2),
+          );
+          strongTotal += strong.score;
+          weakTotal += weak.score;
+        }
+
+        expect(strongTotal, greaterThan(weakTotal));
+      },
+    );
   });
 }

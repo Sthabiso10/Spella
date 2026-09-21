@@ -89,7 +89,10 @@ class SegmentedProgress extends StatelessWidget {
               curve: AppMotion.enter,
               width: width,
               height: height,
-              decoration: BoxDecoration(color: colorFor(i), borderRadius: AppRadius.pill),
+              decoration: BoxDecoration(
+                color: colorFor(i),
+                borderRadius: AppRadius.pill,
+              ),
             ),
           ),
       ],

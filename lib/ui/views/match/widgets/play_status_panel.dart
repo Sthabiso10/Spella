@@ -60,13 +60,17 @@ class PlayStatusPanel extends StatelessWidget {
                   value: score,
                   child: Text(
                     '+$score',
-                    style: AppTextStyles.scoreLarge.copyWith(color: palette.success),
+                    style: AppTextStyles.scoreLarge.copyWith(
+                      color: palette.success,
+                    ),
                   ),
                 ),
                 verticalSpace(AppSpacing.sm),
                 Text(
                   'POINTS IF YOU PLAY NOW',
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
               ],
             )

@@ -6,7 +6,8 @@ import 'package:spella/core/models/slot_bonus.dart';
 /// Builds a board from [letters] with no bonus slots unless [bonuses] is given.
 RoundBoard boardOf(String letters, {List<SlotBonus>? bonuses}) {
   final List<LetterTile> rack = <LetterTile>[
-    for (int i = 0; i < letters.length; i++) LetterTile.of(letters[i], index: i),
+    for (int i = 0; i < letters.length; i++)
+      LetterTile.of(letters[i], index: i),
   ];
   return RoundBoard(
     rack: rack,

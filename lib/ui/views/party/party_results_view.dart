@@ -26,7 +26,11 @@ class PartyResultsView extends StackedView<PartyResultsViewModel> {
   final PartyResultsViewArguments arguments;
 
   @override
-  Widget builder(BuildContext context, PartyResultsViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    PartyResultsViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return Scaffold(
@@ -187,7 +191,11 @@ class _StandingRow extends StatelessWidget {
             ),
           ),
           horizontalSpace(AppSpacing.md),
-          AppAvatar(player: standing.player.asPlayer, size: 36, ring: AvatarRing.none),
+          AppAvatar(
+            player: standing.player.asPlayer,
+            size: 36,
+            ring: AvatarRing.none,
+          ),
           horizontalSpace(AppSpacing.md),
           Expanded(
             child: Column(
@@ -223,7 +231,9 @@ class _StandingRow extends StatelessWidget {
             value: standing.points,
             style: AppTextStyles.score.copyWith(
               fontSize: 24,
-              color: standing.isWinner ? palette.textPrimary : palette.textSecondary,
+              color: standing.isWinner
+                  ? palette.textPrimary
+                  : palette.textSecondary,
             ),
           ),
         ],
@@ -255,7 +265,9 @@ class _BestWordOfTheGame extends StatelessWidget {
                   'WORD OF THE GAME · ${standing.player.name.toUpperCase()}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
                 verticalSpace(AppSpacing.sm),
                 Text(

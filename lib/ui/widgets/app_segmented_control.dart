@@ -30,7 +30,8 @@ class AppSegmentedControl<T> extends StatelessWidget {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         const double padding = 3;
-        final double segmentWidth = (constraints.maxWidth - padding * 2) / values.length;
+        final double segmentWidth =
+            (constraints.maxWidth - padding * 2) / values.length;
 
         return Container(
           height: 38,

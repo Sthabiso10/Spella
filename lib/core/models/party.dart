@@ -10,7 +10,11 @@ import 'package:spella/core/models/word_play.dart';
 /// them a separate type is what stops party scores leaking into anyone's real
 /// record.
 class PartyPlayer {
-  const PartyPlayer({required this.id, required this.name, required this.avatar});
+  const PartyPlayer({
+    required this.id,
+    required this.name,
+    required this.avatar,
+  });
 
   final String id;
   final String name;
@@ -39,7 +43,10 @@ class PartyPlayer {
 /// Everybody gets the identical rack and bonus layout, exactly as in a duel, so
 /// the round stays a pure test of who sees the better word.
 class PartyRound {
-  const PartyRound({required this.deal, this.plays = const <String, WordPlay>{}});
+  const PartyRound({
+    required this.deal,
+    this.plays = const <String, WordPlay>{},
+  });
 
   /// The rack, its bonus layout and the best word available on it.
   final GameRound deal;
@@ -71,8 +78,10 @@ class PartyRound {
     };
   }
 
-  PartyRound withPlay(String playerId, WordPlay play) =>
-      PartyRound(deal: deal, plays: <String, WordPlay>{...plays, playerId: play});
+  PartyRound withPlay(String playerId, WordPlay play) => PartyRound(
+    deal: deal,
+    plays: <String, WordPlay>{...plays, playerId: play},
+  );
 }
 
 /// A player's position on the final table.
@@ -145,14 +154,18 @@ class PartyMatch {
   bool get isComplete => isFinalRound && isRoundComplete;
 
   /// Rounds with every play in, for the progress markers.
-  int get completedRounds =>
-      rounds.where((PartyRound round) => round.isPlayedBy(players.length)).length;
+  int get completedRounds => rounds
+      .where((PartyRound round) => round.isPlayedBy(players.length))
+      .length;
 
-  int totalFor(String playerId) =>
-      rounds.fold(0, (int sum, PartyRound round) => sum + round.scoreFor(playerId));
+  int totalFor(String playerId) => rounds.fold(
+    0,
+    (int sum, PartyRound round) => sum + round.scoreFor(playerId),
+  );
 
-  int roundsWonBy(String playerId) =>
-      rounds.where((PartyRound round) => round.winnerIds.contains(playerId)).length;
+  int roundsWonBy(String playerId) => rounds
+      .where((PartyRound round) => round.winnerIds.contains(playerId))
+      .length;
 
   WordPlay? bestPlayFor(String playerId) {
     WordPlay? best;
@@ -171,7 +184,10 @@ class PartyMatch {
   /// kitchen table starts an argument the app cannot settle.
   List<PartyStanding> get standings {
     final List<PartyPlayer> sorted = List<PartyPlayer>.of(players)
-      ..sort((PartyPlayer a, PartyPlayer b) => totalFor(b.id).compareTo(totalFor(a.id)));
+      ..sort(
+        (PartyPlayer a, PartyPlayer b) =>
+            totalFor(b.id).compareTo(totalFor(a.id)),
+      );
 
     final List<PartyStanding> table = <PartyStanding>[];
     for (int i = 0; i < sorted.length; i++) {

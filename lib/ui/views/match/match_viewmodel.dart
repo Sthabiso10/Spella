@@ -119,7 +119,8 @@ class MatchViewModel extends BaseViewModel with WidgetsBindingObserver {
   double get clockProgress => _clock.progress;
 
   /// `true` when the clock is low enough to warrant the warning colour.
-  bool get isTimeCritical => _clock.remaining <= 10 && _phase == MatchPhase.playing;
+  bool get isTimeCritical =>
+      _clock.remaining <= 10 && _phase == MatchPhase.playing;
 
   /// `true` while the game is holding for an interruption.
   bool get isPaused => _phase == MatchPhase.paused;
@@ -178,7 +179,8 @@ class MatchViewModel extends BaseViewModel with WidgetsBindingObserver {
   /// Per-round outcomes so far, for the round progress dots.
   List<GameRound> get completedRounds => _match.completedRounds;
 
-  bool isPowerUpUsed(PowerUp powerUp) => _powerUpsUsedThisRound.contains(powerUp);
+  bool isPowerUpUsed(PowerUp powerUp) =>
+      _powerUpsUsedThisRound.contains(powerUp);
 
   /// A power-up is available while playing, once per round, if affordable -
   /// and only if it would actually do something. A Swap with every tile
@@ -335,12 +337,13 @@ class MatchViewModel extends BaseViewModel with WidgetsBindingObserver {
     // Held rather than paused: the dialog is already the interruption, and a
     // pause screen behind it would just be a second one.
     _suspend();
-    final DialogResponse<dynamic>? response = await _dialog.showConfirmationDialog(
-      title: 'Leave the match?',
-      description: 'Your progress in this game will be lost.',
-      confirmationTitle: 'Leave',
-      cancelTitle: 'Keep playing',
-    );
+    final DialogResponse<dynamic>? response = await _dialog
+        .showConfirmationDialog(
+          title: 'Leave the match?',
+          description: 'Your progress in this game will be lost.',
+          confirmationTitle: 'Leave',
+          cancelTitle: 'Keep playing',
+        );
     if (disposed) return;
 
     if (response?.confirmed ?? false) {
@@ -458,7 +461,9 @@ class MatchViewModel extends BaseViewModel with WidgetsBindingObserver {
   /// the player's if they found one, otherwise the best word on the rack.
   Future<void> _loadDefinitionForRound() async {
     final WordPlay? play = myPlay;
-    final String word = play != null && !play.isPass ? play.word : round.bestPossibleWord;
+    final String word = play != null && !play.isPass
+        ? play.word
+        : round.bestPossibleWord;
     if (word.isEmpty) return;
 
     _isLoadingDefinition = true;
@@ -493,8 +498,14 @@ class MatchViewModel extends BaseViewModel with WidgetsBindingObserver {
     final int toRedraw = _board.slotCount - kept.length;
     if (toRedraw <= 0) return false;
 
-    final List<LetterTile> refreshed = _rackGenerator.redraw(kept, count: toRedraw);
-    final RoundBoard replacement = RoundBoard(rack: refreshed, bonuses: _board.bonuses);
+    final List<LetterTile> refreshed = _rackGenerator.redraw(
+      kept,
+      count: toRedraw,
+    );
+    final RoundBoard replacement = RoundBoard(
+      rack: refreshed,
+      bonuses: _board.bonuses,
+    );
     for (final LetterTile tile in kept) {
       replacement.place(tile);
     }

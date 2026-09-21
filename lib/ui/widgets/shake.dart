@@ -53,7 +53,8 @@ class _ShakeState extends State<Shake> with SingleTickerProviderStateMixin {
       builder: (BuildContext context, Widget? child) {
         // Three decaying oscillations.
         final double decay = 1 - _controller.value;
-        final double offset = sin(_controller.value * pi * 6) * widget.amplitude * decay;
+        final double offset =
+            sin(_controller.value * pi * 6) * widget.amplitude * decay;
         return Transform.translate(offset: Offset(offset, 0), child: child);
       },
     );

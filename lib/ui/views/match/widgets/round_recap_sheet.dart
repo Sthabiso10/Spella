@@ -72,64 +72,73 @@ class RoundRecapSheet extends StatelessWidget {
         child: SingleChildScrollView(
           child: OverlayEntrance(
             child: AppCard(
-            floats: true,
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  didWin
-                      ? 'WON'
-                      : didLose
-                      ? 'LOST'
-                      : 'TIED',
-                  style: AppTextStyles.overline.copyWith(
-                    color: didWin
-                        ? palette.success
+              floats: true,
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    didWin
+                        ? 'WON'
                         : didLose
-                        ? palette.textMuted
-                        : palette.textSecondary,
+                        ? 'LOST'
+                        : 'TIED',
+                    style: AppTextStyles.overline.copyWith(
+                      color: didWin
+                          ? palette.success
+                          : didLose
+                          ? palette.textMuted
+                          : palette.textSecondary,
+                    ),
                   ),
-                ),
-                verticalSpace(AppSpacing.sm),
-                Text(
-                  _verdict,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.headingMedium.copyWith(color: palette.textPrimary),
-                ),
-                verticalSpace(AppSpacing.xl),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: _PlayColumn(label: 'You', play: myPlay, isWinner: didWin),
-                      ),
-                      VerticalDivider(width: 1, color: palette.divider),
-                      Expanded(
-                        child: _PlayColumn(
-                          label: opponent.username,
-                          play: opponentPlay,
-                          isWinner: didLose,
-                        ),
-                      ),
-                    ],
+                  verticalSpace(AppSpacing.sm),
+                  Text(
+                    _verdict,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.headingMedium.copyWith(
+                      color: palette.textPrimary,
+                    ),
                   ),
-                ),
-                if (bestPossibleWord.isNotEmpty) ...<Widget>[
                   verticalSpace(AppSpacing.xl),
-                  _BestWordStrip(word: bestPossibleWord),
+                  IntrinsicHeight(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: _PlayColumn(
+                            label: 'You',
+                            play: myPlay,
+                            isWinner: didWin,
+                          ),
+                        ),
+                        VerticalDivider(width: 1, color: palette.divider),
+                        Expanded(
+                          child: _PlayColumn(
+                            label: opponent.username,
+                            play: opponentPlay,
+                            isWinner: didLose,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  if (bestPossibleWord.isNotEmpty) ...<Widget>[
+                    verticalSpace(AppSpacing.xl),
+                    _BestWordStrip(word: bestPossibleWord),
+                  ],
+                  _DefinitionPanel(
+                    definition: definition,
+                    isLoading: isLoadingDefinition,
+                  ),
+                  verticalSpace(AppSpacing.xl),
+                  AppButton(
+                    label: isFinalRound ? 'See Results' : 'Next Round',
+                    size: AppButtonSize.large,
+                    trailingIcon: Icons.arrow_forward_rounded,
+                    onPressed: onContinue,
+                  ),
                 ],
-                _DefinitionPanel(definition: definition, isLoading: isLoadingDefinition),
-                verticalSpace(AppSpacing.xl),
-                AppButton(
-                  label: isFinalRound ? 'See Results' : 'Next Round',
-                  size: AppButtonSize.large,
-                  trailingIcon: Icons.arrow_forward_rounded,
-                  onPressed: onContinue,
-                ),
-              ],
-            ),
+              ),
             ),
           ),
         ),
@@ -157,7 +166,10 @@ class _BestWordStrip extends StatelessWidget {
         horizontal: AppSpacing.lg,
         vertical: AppSpacing.md,
       ),
-      decoration: BoxDecoration(color: palette.recess, borderRadius: AppRadius.control),
+      decoration: BoxDecoration(
+        color: palette.recess,
+        borderRadius: AppRadius.control,
+      ),
       child: Column(
         children: <Widget>[
           Text(
@@ -252,7 +264,9 @@ class _DefinitionPanel extends StatelessWidget {
           verticalSpace(AppSpacing.xs),
           Text(
             entry.definition,
-            style: AppTextStyles.bodySmall.copyWith(color: palette.textSecondary),
+            style: AppTextStyles.bodySmall.copyWith(
+              color: palette.textSecondary,
+            ),
           ),
           if (entry.attribution != null) ...<Widget>[
             verticalSpace(AppSpacing.sm),
@@ -274,7 +288,11 @@ class _DefinitionPanel extends StatelessWidget {
 
 /// One player's word and score breakdown.
 class _PlayColumn extends StatelessWidget {
-  const _PlayColumn({required this.label, required this.play, required this.isWinner});
+  const _PlayColumn({
+    required this.label,
+    required this.play,
+    required this.isWinner,
+  });
 
   final String label;
   final WordPlay? play;

@@ -16,7 +16,11 @@ import 'package:spella/ui/widgets/app_card.dart';
 /// A mode genuinely is a distinct object you pick up, so these stay cards while
 /// most of Home is spacing and type.
 class ModeGrid extends StatelessWidget {
-  const ModeGrid({required this.modes, required this.onModeSelected, super.key});
+  const ModeGrid({
+    required this.modes,
+    required this.onModeSelected,
+    super.key,
+  });
 
   final List<GameMode> modes;
   final ValueChanged<GameMode> onModeSelected;
@@ -79,7 +83,9 @@ class _ModeCard extends StatelessWidget {
             mode.label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.headingSmall.copyWith(color: palette.textPrimary),
+            style: AppTextStyles.headingSmall.copyWith(
+              color: palette.textPrimary,
+            ),
           ),
           verticalSpace(AppSpacing.xs),
           // The tagline off the model rather than a second copy of the specs

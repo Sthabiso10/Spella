@@ -44,9 +44,14 @@ void setupLocator() {
 
   // Swappable back ends. Replace the right hand side when the real services
   // land; nothing that depends on them needs to change.
-  locator.registerLazySingleton<DefinitionService>(() => FreeDictionaryApiService());
+  locator.registerLazySingleton<DefinitionService>(
+    () => FreeDictionaryApiService(),
+  );
   locator.registerLazySingleton<OpponentService>(
-    () => BotOpponentService(locator<DictionaryService>(), locator<ScoringService>()),
+    () => BotOpponentService(
+      locator<DictionaryService>(),
+      locator<ScoringService>(),
+    ),
   );
   locator.registerLazySingleton<PlayerService>(() => LocalPlayerService());
   locator.registerLazySingleton<SocialService>(() => EmptySocialService());

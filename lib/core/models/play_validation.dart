@@ -21,13 +21,21 @@ enum PlayRejection {
 /// Carries the live score so the UI can preview what a play is worth before
 /// the player commits to it.
 class PlayValidation {
-  const PlayValidation._({required this.word, required this.breakdown, this.rejection});
+  const PlayValidation._({
+    required this.word,
+    required this.breakdown,
+    this.rejection,
+  });
 
-  const PlayValidation.valid({required String word, required ScoreBreakdown breakdown})
-    : this._(word: word, breakdown: breakdown);
+  const PlayValidation.valid({
+    required String word,
+    required ScoreBreakdown breakdown,
+  }) : this._(word: word, breakdown: breakdown);
 
-  const PlayValidation.invalid({required String word, required PlayRejection reason})
-    : this._(word: word, breakdown: ScoreBreakdown.empty, rejection: reason);
+  const PlayValidation.invalid({
+    required String word,
+    required PlayRejection reason,
+  }) : this._(word: word, breakdown: ScoreBreakdown.empty, rejection: reason);
 
   final String word;
   final ScoreBreakdown breakdown;

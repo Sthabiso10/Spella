@@ -68,7 +68,9 @@ class _PodiumStep extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: AppTextStyles.labelSmall.copyWith(color: palette.textPrimary),
+            style: AppTextStyles.labelSmall.copyWith(
+              color: palette.textPrimary,
+            ),
           ),
           verticalSpace(2),
           Text(
@@ -85,38 +87,43 @@ class _PodiumStep extends StatelessWidget {
             tween: Tween<double>(begin: 0, end: height),
             duration: AppMotion.entrance,
             curve: AppMotion.enter,
-            builder: (BuildContext context, double value, Widget? child) => Container(
-              height: value,
-              width: double.infinity,
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                color: palette.surface,
-                borderRadius: const BorderRadius.vertical(top: AppRadius.xs),
-                border: Border.all(color: palette.border),
-              ),
-              child: Stack(
-                children: <Widget>[
-                  // The winner's cap is drawn inside the riser and clipped to
-                  // its corners. A thicker top border would have done the same
-                  // job, but a border radius needs every side to match.
-                  if (isWinner)
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(height: 2, color: palette.accent),
+            builder: (BuildContext context, double value, Widget? child) =>
+                Container(
+                  height: value,
+                  width: double.infinity,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    color: palette.surface,
+                    borderRadius: const BorderRadius.vertical(
+                      top: AppRadius.xs,
                     ),
-                  if (value >= 32)
-                    Center(
-                      child: Text(
-                        '${entry.rank}',
-                        style: AppTextStyles.score.copyWith(
-                          fontSize: isWinner ? 26 : 20,
-                          color: isWinner ? palette.textPrimary : palette.textMuted,
+                    border: Border.all(color: palette.border),
+                  ),
+                  child: Stack(
+                    children: <Widget>[
+                      // The winner's cap is drawn inside the riser and clipped to
+                      // its corners. A thicker top border would have done the same
+                      // job, but a border radius needs every side to match.
+                      if (isWinner)
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(height: 2, color: palette.accent),
                         ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
+                      if (value >= 32)
+                        Center(
+                          child: Text(
+                            '${entry.rank}',
+                            style: AppTextStyles.score.copyWith(
+                              fontSize: isWinner ? 26 : 20,
+                              color: isWinner
+                                  ? palette.textPrimary
+                                  : palette.textMuted,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
           ),
         ],
       ),

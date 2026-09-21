@@ -69,27 +69,28 @@ void main() {
     // The record strip is three figures and two hairlines on one line, and it
     // only exists for a player who has finished a match - so the responsive
     // suite, which pumps a fresh account, never lays it out at all.
-    testWidgets('lays the record out on the narrowest phone at the largest text', (
-      WidgetTester tester,
-    ) async {
-      await _pumpTall(
-        tester,
-        const HomeView(),
-        size: const Size(320, 568),
-        textScale: 1.6,
-      );
+    testWidgets(
+      'lays the record out on the narrowest phone at the largest text',
+      (WidgetTester tester) async {
+        await _pumpTall(
+          tester,
+          const HomeView(),
+          size: const Size(320, 568),
+          textScale: 1.6,
+        );
 
-      // Scrolling is what forces the strip to lay out and paint - and a render
-      // overflow throws during paint, which is the whole point of the check.
-      // The page scroller specifically: the waiting-friends strip is a
-      // horizontal scrollable of its own, and scrolling that goes nowhere.
-      await tester.scrollUntilVisible(
-        find.text('Your record'),
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      expect(find.text('Your record'), findsOneWidget);
-    });
+        // Scrolling is what forces the strip to lay out and paint - and a render
+        // overflow throws during paint, which is the whole point of the check.
+        // The page scroller specifically: the waiting-friends strip is a
+        // horizontal scrollable of its own, and scrolling that goes nowhere.
+        await tester.scrollUntilVisible(
+          find.text('Your record'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
+        expect(find.text('Your record'), findsOneWidget);
+      },
+    );
 
     testWidgets('leads with whoever is waiting, not with a generic match', (
       WidgetTester tester,
@@ -121,7 +122,12 @@ void main() {
             ),
           ],
           suggestions: <Player>[
-            const Player(id: 's1', username: 'Nell', avatar: '🦉', isOnline: true),
+            const Player(
+              id: 's1',
+              username: 'Nell',
+              avatar: '🦉',
+              isOnline: true,
+            ),
           ],
         ),
       );
@@ -148,7 +154,9 @@ void main() {
       );
     });
 
-    testWidgets('counts the list it is actually showing', (WidgetTester tester) async {
+    testWidgets('counts the list it is actually showing', (
+      WidgetTester tester,
+    ) async {
       await _pumpTall(tester, const FriendsView());
 
       expect(find.text('7 friends · 3 online'), findsOneWidget);
@@ -194,7 +202,9 @@ void main() {
       expect(find.byType(FriendsView), findsOneWidget);
     });
 
-    testWidgets('says so when a search matches nobody', (WidgetTester tester) async {
+    testWidgets('says so when a search matches nobody', (
+      WidgetTester tester,
+    ) async {
       await _pumpTall(tester, const FriendsView());
 
       await tester.enterText(find.byType(TextField), 'zzz');
@@ -220,9 +230,30 @@ void main() {
 
 /// Seven friends, three of them online.
 const List<Player> _friends = <Player>[
-  Player(id: 'f1', username: 'Ada', avatar: '🦊', level: 6, wins: 9, isOnline: true),
-  Player(id: 'f2', username: 'Bo', avatar: '🐙', level: 4, wins: 5, isOnline: true),
-  Player(id: 'f3', username: 'Cy', avatar: '🐉', level: 3, wins: 2, isOnline: true),
+  Player(
+    id: 'f1',
+    username: 'Ada',
+    avatar: '🦊',
+    level: 6,
+    wins: 9,
+    isOnline: true,
+  ),
+  Player(
+    id: 'f2',
+    username: 'Bo',
+    avatar: '🐙',
+    level: 4,
+    wins: 5,
+    isOnline: true,
+  ),
+  Player(
+    id: 'f3',
+    username: 'Cy',
+    avatar: '🐉',
+    level: 3,
+    wins: 2,
+    isOnline: true,
+  ),
   Player(id: 'f4', username: 'Dot', avatar: '🐳', level: 8, wins: 14),
   Player(id: 'f5', username: 'Eli', avatar: '🦁', level: 2, wins: 1),
   Player(id: 'f6', username: 'Fay', avatar: '🐼', level: 5, wins: 7),
@@ -258,7 +289,9 @@ Future<void> _pumpTall(
       navigatorKey: StackedService.navigatorKey,
       onGenerateRoute: router.onGenerateRoute,
       builder: (BuildContext context, Widget? view) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(textScale)),
+        data: MediaQuery.of(
+          context,
+        ).copyWith(textScaler: TextScaler.linear(textScale)),
         child: view ?? const SizedBox.shrink(),
       ),
       home: child,
@@ -267,7 +300,8 @@ Future<void> _pumpTall(
   await tester.pump();
 }
 
-double _topOf(WidgetTester tester, Finder finder) => tester.getTopLeft(finder).dy;
+double _topOf(WidgetTester tester, Finder finder) =>
+    tester.getTopLeft(finder).dy;
 
 /// A social graph with whatever the test needs in it.
 class _StubSocialService with ListenableServiceMixin implements SocialService {
@@ -304,7 +338,9 @@ class _StubSocialService with ListenableServiceMixin implements SocialService {
   ];
 
   @override
-  List<LeaderboardEntry> leaderboard(LeaderboardScope scope) => <LeaderboardEntry>[
+  List<LeaderboardEntry> leaderboard(
+    LeaderboardScope scope,
+  ) => <LeaderboardEntry>[
     for (int i = 0; i < friends.length; i++)
       LeaderboardEntry(rank: i + 1, player: friends[i], points: 500 - i * 40),
   ];
@@ -317,7 +353,9 @@ class _StubSocialService with ListenableServiceMixin implements SocialService {
     final String needle = query.trim().toLowerCase();
     if (needle.isEmpty) return friends;
     return friends
-        .where((Player friend) => friend.username.toLowerCase().contains(needle))
+        .where(
+          (Player friend) => friend.username.toLowerCase().contains(needle),
+        )
         .toList(growable: false);
   }
 

@@ -72,7 +72,9 @@ class _AppSearchFieldState extends State<AppSearchField> {
       decoration: BoxDecoration(
         color: hasFocus ? palette.surfaceElevated : palette.surface,
         borderRadius: AppRadius.control,
-        border: Border.all(color: hasFocus ? palette.borderStrong : palette.border),
+        border: Border.all(
+          color: hasFocus ? palette.borderStrong : palette.border,
+        ),
       ),
       child: Row(
         children: <Widget>[
@@ -102,7 +104,9 @@ class _AppSearchFieldState extends State<AppSearchField> {
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
                 hintText: widget.hint,
-                hintStyle: AppTextStyles.body.copyWith(color: palette.textMuted),
+                hintStyle: AppTextStyles.body.copyWith(
+                  color: palette.textMuted,
+                ),
               ),
             ),
           ),

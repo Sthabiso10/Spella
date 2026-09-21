@@ -42,7 +42,11 @@ class AppBadge extends StatelessWidget {
         palette.surfaceElevated,
         palette.border,
       ),
-      BadgeTone.accent => (palette.accent, palette.accentSoft, palette.accentBorder),
+      BadgeTone.accent => (
+        palette.accent,
+        palette.accentSoft,
+        palette.accentBorder,
+      ),
       BadgeTone.success => (
         palette.success,
         palette.successSoft,
@@ -67,7 +71,10 @@ class AppBadge extends StatelessWidget {
             Icon(icon, size: 11, color: ink),
             horizontalSpace(3),
           ],
-          Text(label, style: AppTextStyles.labelSmall.copyWith(fontSize: 11, color: ink)),
+          Text(
+            label,
+            style: AppTextStyles.labelSmall.copyWith(fontSize: 11, color: ink),
+          ),
         ],
       ),
     );
@@ -113,14 +120,17 @@ class AppMetric extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (icon != null) ...<Widget>[
-              Icon(icon, size: isLarge ? 18 : 14, color: tone ?? palette.textMuted),
+              Icon(
+                icon,
+                size: isLarge ? 18 : 14,
+                color: tone ?? palette.textMuted,
+              ),
               horizontalSpace(AppSpacing.xs + 1),
             ],
             Text(
               value,
-              style: (isLarge ? AppTextStyles.score : AppTextStyles.scoreSmall).copyWith(
-                color: tone ?? palette.textPrimary,
-              ),
+              style: (isLarge ? AppTextStyles.score : AppTextStyles.scoreSmall)
+                  .copyWith(color: tone ?? palette.textPrimary),
             ),
           ],
         ),
@@ -137,7 +147,12 @@ class AppMetric extends StatelessWidget {
 /// An icon and a value on one line, for header bars where vertical room is
 /// short - coins, gems, a streak.
 class AppInlineStat extends StatelessWidget {
-  const AppInlineStat({required this.icon, required this.value, this.tone, super.key});
+  const AppInlineStat({
+    required this.icon,
+    required this.value,
+    this.tone,
+    super.key,
+  });
 
   final IconData icon;
   final String value;

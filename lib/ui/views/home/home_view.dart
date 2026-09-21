@@ -38,10 +38,15 @@ class HomeView extends StackedView<HomeViewModel> {
         bottom: false,
         child: PageWidth(
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: <Widget>[
               SliverToBoxAdapter(
-                child: HomeHeader(player: viewModel.player, greeting: viewModel.greeting),
+                child: HomeHeader(
+                  player: viewModel.player,
+                  greeting: viewModel.greeting,
+                ),
               ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
@@ -57,7 +62,8 @@ class HomeView extends StackedView<HomeViewModel> {
                       subtitle: viewModel.heroSubtitle,
                       quickMatchMode: viewModel.quickMatchMode,
                       waitingFriends: viewModel.waitingFriends,
-                      onPlay: () => viewModel.startQuickMatch(viewModel.quickMatchMode),
+                      onPlay: () =>
+                          viewModel.startQuickMatch(viewModel.quickMatchMode),
                       onFriendTap: viewModel.challenge,
                     ),
                     verticalSpace(AppSpacing.section),
@@ -124,7 +130,10 @@ class _ActivityFeed extends StatelessWidget {
     return Column(
       children: <Widget>[
         for (int i = 0; i < feed.length; i++) ...<Widget>[
-          ActivityTile(activity: feed[i], onLike: () => viewModel.toggleLike(feed[i].id)),
+          ActivityTile(
+            activity: feed[i],
+            onLike: () => viewModel.toggleLike(feed[i].id),
+          ),
           if (i != feed.length - 1) const AppDivider(indent: 46),
         ],
       ],

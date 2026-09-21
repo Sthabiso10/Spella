@@ -42,7 +42,8 @@ class RoundBoard {
   bool isPlaced(LetterTile tile) => _placed.contains(tile);
 
   /// Bonus for [slotIndex], or [SlotBonus.none] when out of range.
-  SlotBonus bonusAt(int slotIndex) => slotIndex >= 0 && slotIndex < _bonuses.length
+  SlotBonus bonusAt(int slotIndex) =>
+      slotIndex >= 0 && slotIndex < _bonuses.length
       ? _bonuses[slotIndex]
       : SlotBonus.none;
 
@@ -83,7 +84,9 @@ class RoundBoard {
     final List<LetterTile> picked = <LetterTile>[];
 
     for (final String letter in letters.toLowerCase().split('')) {
-      final int index = available.indexWhere((LetterTile tile) => tile.letter == letter);
+      final int index = available.indexWhere(
+        (LetterTile tile) => tile.letter == letter,
+      );
       if (index == -1) return false;
       picked.add(available.removeAt(index));
     }

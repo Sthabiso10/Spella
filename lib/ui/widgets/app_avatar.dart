@@ -47,7 +47,12 @@ class AppAvatar extends StatelessWidget {
   /// as a colour in its own right.
   Color _discFor(AppPalette palette) {
     final double hue = (player.id.hashCode.abs() % 360).toDouble();
-    return HSLColor.fromAHSL(1, hue, 0.2, palette.isDark ? 0.15 : 0.9).toColor();
+    return HSLColor.fromAHSL(
+      1,
+      hue,
+      0.2,
+      palette.isDark ? 0.15 : 0.9,
+    ).toColor();
   }
 
   @override
@@ -72,7 +77,9 @@ class AppAvatar extends StatelessWidget {
               shape: BoxShape.circle,
               border: hasRing
                   ? Border.all(
-                      color: ring == AvatarRing.accent ? palette.accent : palette.border,
+                      color: ring == AvatarRing.accent
+                          ? palette.accent
+                          : palette.border,
                       width: ringWidth,
                     )
                   : null,

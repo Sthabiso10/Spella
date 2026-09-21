@@ -30,17 +30,26 @@ class FriendsView extends StackedView<FriendsViewModel> {
   const FriendsView({super.key});
 
   @override
-  Widget builder(BuildContext context, FriendsViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    FriendsViewModel viewModel,
+    Widget? child,
+  ) {
     return Scaffold(
       backgroundColor: context.palette.canvas,
       body: SafeArea(
         bottom: false,
         child: PageWidth(
           child: CustomScrollView(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const BouncingScrollPhysics(
+              parent: AlwaysScrollableScrollPhysics(),
+            ),
             slivers: <Widget>[
               SliverToBoxAdapter(
-                child: PageHeader(title: 'Friends', subtitle: viewModel.headerSubtitle),
+                child: PageHeader(
+                  title: 'Friends',
+                  subtitle: viewModel.headerSubtitle,
+                ),
               ),
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(
@@ -105,7 +114,10 @@ class FriendsView extends StackedView<FriendsViewModel> {
         count: '${viewModel.onlineFriends.length}',
         accentDot: true,
       ),
-      _FriendList(friends: viewModel.onlineFriends, onChallenge: viewModel.challenge),
+      _FriendList(
+        friends: viewModel.onlineFriends,
+        onChallenge: viewModel.challenge,
+      ),
       verticalSpace(AppSpacing.section),
     ],
     if (viewModel.suggestedMatches.isNotEmpty) ...<Widget>[
@@ -118,8 +130,14 @@ class FriendsView extends StackedView<FriendsViewModel> {
       // Named for what it is. It used to be labelled "All friends", which is
       // what a reader would expect to contain everybody - including the people
       // listed under Online now, directly above it.
-      SectionHeader(title: 'Offline', count: '${viewModel.offlineFriends.length}'),
-      _FriendList(friends: viewModel.offlineFriends, onChallenge: viewModel.challenge),
+      SectionHeader(
+        title: 'Offline',
+        count: '${viewModel.offlineFriends.length}',
+      ),
+      _FriendList(
+        friends: viewModel.offlineFriends,
+        onChallenge: viewModel.challenge,
+      ),
     ],
     if (!viewModel.hasFriends)
       FriendsStarter(
@@ -202,7 +220,10 @@ class _FriendList extends StatelessWidget {
     return Column(
       children: <Widget>[
         for (int i = 0; i < friends.length; i++) ...<Widget>[
-          FriendRow(friend: friends[i], onChallenge: () => onChallenge(friends[i])),
+          FriendRow(
+            friend: friends[i],
+            onChallenge: () => onChallenge(friends[i]),
+          ),
           if (i != friends.length - 1) const AppDivider(indent: 52),
         ],
       ],

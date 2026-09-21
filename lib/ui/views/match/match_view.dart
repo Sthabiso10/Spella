@@ -30,7 +30,11 @@ class MatchView extends StackedView<MatchViewModel> {
   final MatchViewArguments arguments;
 
   @override
-  Widget builder(BuildContext context, MatchViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    MatchViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return PopScope(
@@ -180,7 +184,12 @@ class _PlayArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.lg,
+      ),
       child: Column(
         children: <Widget>[
           // A rejected word shakes rather than raising a dialog. It says "not
@@ -218,7 +227,9 @@ class _PlayArea extends StatelessWidget {
                   label: 'Play Word',
                   size: AppButtonSize.large,
                   trailingIcon: Icons.arrow_forward_rounded,
-                  onPressed: viewModel.isInteractive ? viewModel.submitWord : null,
+                  onPressed: viewModel.isInteractive
+                      ? viewModel.submitWord
+                      : null,
                 ),
               ),
               horizontalSpace(AppSpacing.md),
@@ -226,7 +237,9 @@ class _PlayArea extends StatelessWidget {
                 icon: Icons.shuffle_rounded,
                 size: 48,
                 tooltip: 'Shuffle rack',
-                onPressed: viewModel.isInteractive ? viewModel.shuffleRack : null,
+                onPressed: viewModel.isInteractive
+                    ? viewModel.shuffleRack
+                    : null,
               ),
             ],
           ),

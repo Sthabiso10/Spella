@@ -19,7 +19,9 @@ class AppTextStyles {
   ///
   /// Anything that ticks - a clock, a score counting up, a rank - must not
   /// reflow as its digits change, or the whole row twitches once a second.
-  static const List<FontFeature> _tabular = <FontFeature>[FontFeature.tabularFigures()];
+  static const List<FontFeature> _tabular = <FontFeature>[
+    FontFeature.tabularFigures(),
+  ];
 
   // ---------------------------------------------------------------------------
   // Display - reserved for the one thing a screen is about

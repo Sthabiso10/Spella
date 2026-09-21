@@ -34,7 +34,11 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
   final PartyMatchViewArguments arguments;
 
   @override
-  Widget builder(BuildContext context, PartyMatchViewModel viewModel, Widget? child) {
+  Widget builder(
+    BuildContext context,
+    PartyMatchViewModel viewModel,
+    Widget? child,
+  ) {
     final AppPalette palette = context.palette;
 
     return PopScope(
@@ -78,7 +82,8 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
       PartyMatchViewModel(roster: arguments.players);
 
   @override
-  void onViewModelReady(PartyMatchViewModel viewModel) => viewModel.initialise();
+  void onViewModelReady(PartyMatchViewModel viewModel) =>
+      viewModel.initialise();
 
   /// Whichever overlay the current phase calls for.
   ///
@@ -89,8 +94,10 @@ class PartyMatchView extends StackedView<PartyMatchViewModel> {
     switch (viewModel.phase) {
       case PartyPhase.handoff:
         return HandoffOverlay(
-          key: ValueKey<String>('handoff-${viewModel.currentPlayer.id}'
-              '-${viewModel.roundNumber}'),
+          key: ValueKey<String>(
+            'handoff-${viewModel.currentPlayer.id}'
+            '-${viewModel.roundNumber}',
+          ),
           player: viewModel.currentPlayer,
           nextPlayer: viewModel.nextPlayer,
           roundNumber: viewModel.roundNumber,
@@ -179,14 +186,18 @@ class _TurnBadge extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'YOUR TURN',
-                  style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.overline.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
                 verticalSpace(2),
                 Text(
                   viewModel.currentPlayer.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.headingSmall.copyWith(color: palette.textPrimary),
+                  style: AppTextStyles.headingSmall.copyWith(
+                    color: palette.textPrimary,
+                  ),
                 ),
               ],
             ),
@@ -202,7 +213,9 @@ class _TurnBadge extends StatelessWidget {
               verticalSpace(2),
               Text(
                 'TOTAL',
-                style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                style: AppTextStyles.overline.copyWith(
+                  color: palette.textMuted,
+                ),
               ),
             ],
           ),
@@ -242,7 +255,12 @@ class _PlayArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.lg,
+        0,
+        AppSpacing.lg,
+        AppSpacing.lg,
+      ),
       child: Column(
         children: <Widget>[
           Shake(
@@ -277,7 +295,9 @@ class _PlayArea extends StatelessWidget {
                   label: 'Play Word',
                   size: AppButtonSize.large,
                   trailingIcon: Icons.arrow_forward_rounded,
-                  onPressed: viewModel.isInteractive ? viewModel.submitWord : null,
+                  onPressed: viewModel.isInteractive
+                      ? viewModel.submitWord
+                      : null,
                 ),
               ),
               horizontalSpace(AppSpacing.md),
@@ -285,7 +305,9 @@ class _PlayArea extends StatelessWidget {
                 icon: Icons.shuffle_rounded,
                 size: 48,
                 tooltip: 'Shuffle rack',
-                onPressed: viewModel.isInteractive ? viewModel.shuffleRack : null,
+                onPressed: viewModel.isInteractive
+                    ? viewModel.shuffleRack
+                    : null,
               ),
             ],
           ),

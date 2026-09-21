@@ -13,10 +13,8 @@ class RanksViewModel extends ReactiveViewModel {
   LeaderboardScope _scope = LeaderboardScope.friends;
 
   @override
-  List<ListenableServiceMixin> get listenableServices => <ListenableServiceMixin>[
-    _socialService,
-    _playerService,
-  ];
+  List<ListenableServiceMixin> get listenableServices =>
+      <ListenableServiceMixin>[_socialService, _playerService];
 
   LeaderboardScope get scope => _scope;
 
@@ -27,15 +25,19 @@ class RanksViewModel extends ReactiveViewModel {
   /// The board with the player slotted in and everything re-ranked, so their
   /// position is always honest rather than pinned to the bottom.
   List<LeaderboardEntry> get entries {
-    final List<LeaderboardEntry> board = <LeaderboardEntry>[
-      ..._socialService.leaderboard(_scope),
-      LeaderboardEntry(
-        rank: 0,
-        player: player,
-        points: _socialService.rankPointsFor(player),
-        isCurrentUser: true,
-      ),
-    ]..sort((LeaderboardEntry a, LeaderboardEntry b) => b.points.compareTo(a.points));
+    final List<LeaderboardEntry> board =
+        <LeaderboardEntry>[
+          ..._socialService.leaderboard(_scope),
+          LeaderboardEntry(
+            rank: 0,
+            player: player,
+            points: _socialService.rankPointsFor(player),
+            isCurrentUser: true,
+          ),
+        ]..sort(
+          (LeaderboardEntry a, LeaderboardEntry b) =>
+              b.points.compareTo(a.points),
+        );
 
     return <LeaderboardEntry>[
       for (int i = 0; i < board.length; i++)

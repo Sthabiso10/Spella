@@ -47,7 +47,9 @@ class HomeHeader extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       greeting.toUpperCase(),
-                      style: AppTextStyles.overline.copyWith(color: palette.textMuted),
+                      style: AppTextStyles.overline.copyWith(
+                        color: palette.textMuted,
+                      ),
                     ),
                     verticalSpace(2),
                     Text(
@@ -93,7 +95,9 @@ class HomeHeader extends StatelessWidget {
                   'Level ${player.level}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.label.copyWith(color: palette.textSecondary),
+                  style: AppTextStyles.label.copyWith(
+                    color: palette.textSecondary,
+                  ),
                 ),
               ),
               horizontalSpace(AppSpacing.sm),
@@ -103,7 +107,9 @@ class HomeHeader extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.right,
-                  style: AppTextStyles.labelSmall.copyWith(color: palette.textMuted),
+                  style: AppTextStyles.labelSmall.copyWith(
+                    color: palette.textMuted,
+                  ),
                 ),
               ),
             ],

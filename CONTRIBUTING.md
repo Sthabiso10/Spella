@@ -24,8 +24,14 @@ flutter test                    # full suite, 188 tests
 dart format lib test            # formatting
 ```
 
-CI runs all three on every pull request. Running them locally first is the
-fastest way to a green build.
+CI runs all three on every pull request, plus a check that `pubspec.lock`
+matches what `flutter pub get` actually resolves. Running them locally first is
+the fastest way to a green build.
+
+> **If a Dependabot PR fails the lockfile check:** Dependabot resolves pub
+> packages without the Flutter SDK's constraints, so it can pin transitive
+> packages to versions the SDK then resolves back down. Check the branch out,
+> run `flutter pub get`, and commit the corrected `pubspec.lock`.
 
 ## Where things go
 

@@ -33,6 +33,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Dependabot resolves pub packages without the Flutter SDK's constraints,
+      # so it can pin transitive packages (vector_math, meta, matcher,
+      # test_api) to versions the SDK then resolves back down. That leaves a
+      # lockfile which does not describe what actually gets installed, and
+      # dirties the tree on every contributor's first `flutter pub get`.
+      # Fail here instead, so the lockfile is corrected before merge.
+      - name: Verify pubspec.lock matches what Flutter resolves
+        run: |
+          if ! git diff --exit-code --stat pubspec.lock; then
+            echo '::error::pubspec.lock does not match the result of flutter pub get. Run flutter pub get locally and commit the updated lockfile.'
+            exit 1
+          fi
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed lib test
 

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/Sthabiso10/Spella/discussions
+    about: Ask a question or float an idea that isn't a bug report yet.
+  - name: Report a security vulnerability
+    url: https://github.com/Sthabiso10/Spella/security/advisories/new
+    about: Report privately. Please do not open a public issue for this.
+  - name: Contributing guide
+    url: https://github.com/Sthabiso10/Spella/blob/main/CONTRIBUTING.md
+    about: Setup, architecture rules and how to open a pull request.

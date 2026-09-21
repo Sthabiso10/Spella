@@ -5,12 +5,14 @@
 A fast-paced word game built in Flutter. Players get a rack of letters and a
 countdown, and race to build the highest-scoring word they can see.
 
-[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![CI](https://github.com/Sthabiso10/Spella/actions/workflows/ci.yml/badge.svg)](https://github.com/Sthabiso10/Spella/actions/workflows/ci.yml)
+[![Flutter](https://img.shields.io/badge/Flutter-3.44-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.12-0175C2?logo=dart&logoColor=white)](https://dart.dev)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-3DDC84)](#running-it)
 [![Tests](https://img.shields.io/badge/Tests-188%20passing-2ea44f)](#testing)
 [![Architecture](https://img.shields.io/badge/Architecture-MVVM%20%2F%20Stacked-6f42c1)](#architecture)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 </div>
 
@@ -41,6 +43,7 @@ injection behind swappable interfaces, and 188 passing tests.
 - [Running it](#running-it)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
+- [Project documentation](#project-documentation)
 - [License](#license)
 
 ---
@@ -273,40 +276,71 @@ outstanding.
 
 ## Contributing
 
-Contributions are welcome this is a small enough codebase that a first PR
+Contributions are welcome — this is a small enough codebase that a first PR
 shouldn't need a guided tour.
 
-1. **Fork the repo and branch off `main`.** Use a descriptive branch name
+**[CONTRIBUTING.md](CONTRIBUTING.md)** has the full guide: setup, the three
+architecture rules worth knowing, how tests are expected to be written, and the
+PR checklist. The short version:
+
+1. **Fork and branch off `main`** with a descriptive name
    (`fix/rack-shuffle-seed`, `feat/daily-challenge-picker`).
-2. **Match the existing shape.** Rules and scoring belong in
-   `lib/core/services/` and must stay pure Dart — no `package:flutter`
-   imports, so they're testable without a widget tree. UI logic belongs in a
-   view model, not the widget tree (see [Architecture](#architecture)).
-3. **Add tests for engine or view model changes.** The project has no CI yet,
-   so `flutter analyze` and `flutter test` passing locally is what stands in
-   for a green build run both before opening a PR:
+2. **Match the existing shape.** Rules and scoring live in
+   `lib/core/services/` and stay pure Dart — no `package:flutter` imports. UI
+   logic belongs in a view model, not the widget tree.
+3. **Add tests for engine or view-model changes.**
+4. **Run the checks before opening** — CI runs the same three:
 
    ```bash
+   dart format lib test
    flutter analyze
    flutter test
    ```
-4. **Keep PRs scoped.** One fix or one feature per PR makes it reviewable;
-   unrelated formatting or refactors belong in a separate PR.
-5. **Open the PR against `main`** with a short description of what changed
-   and why. Screenshots or a screen recording are appreciated for UI changes.
+5. **Keep PRs scoped.** One fix or one feature per PR.
 
 Found a bug or have an idea that isn't a code change yet? Open an
-[issue](https://github.com/Sthabiso10/Spella/issues) reproduction steps for
-bugs, or the problem you're trying to solve for feature ideas, are more useful
-than a proposed implementation.
+[issue](https://github.com/Sthabiso10/Spella/issues/new/choose) — there are
+forms for both. For anything security-related, please use
+[private reporting](SECURITY.md) rather than a public issue.
 
 The [Roadmap](#roadmap) above lists the interfaces already in place for
-backend, multiplayer, social and daily-challenge work those are the
+backend, multiplayer, social and daily-challenge work — those are the
 highest-value places to contribute, since the seams to build against already
 exist.
+
+---
+
+## Project documentation
+
+| | |
+|---|---|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Setup, architecture rules, tests, PR checklist. |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Contributor Covenant 2.1. How to report a problem. |
+| [SECURITY.md](SECURITY.md) | Private vulnerability reporting, scope, and exactly what the app sends over the network. |
+| [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) | Every dependency and bundled data source, with its licence. |
+| [TRADEMARK.md](TRADEMARK.md) | The code is MIT; the name and logo aren't. What that means for forks. |
+| [CHANGELOG.md](CHANGELOG.md) | Release history, [Keep a Changelog](https://keepachangelog.com/) format. |
+
+### Privacy in one line
+
+No accounts, no analytics, no telemetry, no ads, no crash reporting, and no
+player data leaves the device. Spella contacts exactly two hosts —
+`fonts.google.com` for the typeface and `freedictionaryapi.com` for the
+definition shown in the recap — and requests the `INTERNET` permission and
+nothing else. Details in [SECURITY.md](SECURITY.md#what-spella-sends-over-the-network).
 
 ---
 
 ## License
 
 [MIT](LICENSE) — use it, fork it, learn from it.
+
+Two things that sit outside that grant:
+
+- **Branding.** The Spella name, logo and app icon in `assets/branding/` remain
+  the author's marks. Ship your fork under its own name and icon — see
+  [TRADEMARK.md](TRADEMARK.md).
+- **Bundled and third-party work.** The dictionary asset is public domain, the
+  definitions API serves Wiktionary under CC BY-SA 4.0, and every dependency is
+  permissively licensed. Full list in
+  [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
